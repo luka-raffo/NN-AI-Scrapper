@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Más vendidos MercadoLibre — demo</title>
+<style>
+  :root { --ml: #fff159; --ml2: #2d3277; }
+  * { box-sizing: border-box; }
+  body { font-family: system-ui, Arial, sans-serif; margin: 0; background: #ededed; color: #333; }
+  header { background: var(--ml); padding: 16px 24px; }
+  header h1 { margin: 0; font-size: 20px; color: var(--ml2); }
+  .wrap { max-width: 1100px; margin: 24px auto; padding: 0 16px; }
+  .bar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 20px; }
+  select, button { padding: 10px 14px; font-size: 15px; border: 1px solid #ccc; border-radius: 6px; }
+  button { background: var(--ml2); color: #fff; border: none; cursor: pointer; }
+  button:disabled { opacity: .5; cursor: default; }
+  #status { margin-left: 8px; color: #666; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+  .card { background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.12); display: flex; flex-direction: column; }
+  .card img { width: 100%; height: 180px; object-fit: contain; background: #fafafa; }
+  .card .body { padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; }
+  .rank { font-size: 12px; font-weight: 700; color: var(--ml2); }
+  .title { font-size: 13px; line-height: 1.3; height: 51px; overflow: hidden; }
+  .price { font-size: 18px; font-weight: 600; }
+  .seller { font-size: 11px; color: #00a650; }
+  a.title { color: #333; text-decoration: none; }
+  a.title:hover { color: var(--ml2); }
+</style>
+</head>
+<body>
+<header><h1>🔥 Más vendidos en MercadoLibre — demo a demanda</h1></header>
+<div class="wrap">
+  <div class="bar">
+    <select id="pais">
+      <option value="AR">🇦🇷 Argentina</option>
+      <option value="MX">🇲🇽 México</option>
+      <option value="UY">🇺🇾 Uruguay</option>
+      <option value="BR">🇧🇷 Brasil</option>
+    </select>
+    <input id="filtro" type="text" placeholder="🔎 Filtrar por nombre o ID (ej. Audio, MLA1000)…" style="flex:1; min-width:240px;">
+    <select id="nivel">
+      <option value="todas">Todos los niveles</option>
+      <option value="l1">Solo L1 (raíz)</option>
+      <option value="l2">Solo L2</option>
+      <option value="l3">Solo L3</option>
+    </select>
+  </div>
+  <div class="bar">
+    <select id="cat" size="8" style="flex:1; min-width:260px;"></select>
+  </div>
+  <div class="bar">
+    <button id="go">Buscar más vendidos</button>
+    <a id="verlink" href="#" target="_blank" style="display:none; color:var(--ml2); font-size:13px;">🔗 Ver esta categoría en MercadoLibre</a>
+    <span id="count" style="color:#999; font-size:12px;"></span>
+    <span id="status"></span>
+  </div>
+  <div id="grid" class="grid"></div>
+</div>
+
+<script>
+// Cambia esto si el backend corre en otra máquina/puerto:
+const API = "http://127.0.0.1:8000";
+
+const $cat = document.getElementById("cat");
+const $go = document.getElementById("go");
+const $status = document.getElementById("status");
+const $grid = document.getElementById("grid");
+const $filtro = document.getElementById("filtro");
+const $nivel = document.getElementById("nivel");
+const $count = document.getElementById("count");
+const $pais = document.getElementById("pais");
+const $verlink = document.getElementById("verlink");
+
+let CATS = [];
+const NIVEL_ORDEN = { L1: 0, L2: 1, L3: 2 };
+// ngrok free muestra una pagina de aviso si no mandamos este header -> rompe el JSON.
+const HDRS = { "ngrok-skip-browser-warning": "1" };
+const fetchJSON = (u) => fetch(u, { headers: HDRS });
+const esc = s => (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const SITIOS = {
+  MLA: "https://www.mercadolibre.com.ar/mas-vendidos/",
+  MLM: "https://www.mercadolibre.com.mx/mas-vendidos/",
+  MLU: "https://www.mercadolibre.com.uy/mas-vendidos/",
+  MLB: "https://www.mercadolivre.com.br/mais-vendidos/",
+};
+const urlMasVendidos = id => (SITIOS[id.slice(0,3)] || SITIOS.MLA) + id;
+
+function actualizarLink() {
+  const id = $cat.value;
+  if (id) { $verlink.href = urlMasVendidos(id); $verlink.style.display = "inline"; }
+  else { $verlink.style.display = "none"; }
+}
+
+// Cargar el catalogo completo desde el backend
+async function cargarCategorias() {
+  try {
+    const r = await fetchJSON(`${API}/categorias?pais=${$pais.value}&nivel=todas`);
+    CATS = await r.json();
+    CATS.sort((a, b) => (NIVEL_ORDEN[a.nivel] - NIVEL_ORDEN[b.nivel]) ||
+                        (a.ruta || a.nombre).localeCompare(b.ruta || b.nombre));
+    renderOpciones();
+  } catch (e) {
+    $status.textContent = "No se pudo conectar al backend. ¿Está corriendo en " + API + "?";
+  }
+}
+
+function renderOpciones() {
+  const q = $filtro.value.trim().toLowerCase();
+  const niv = $nivel.value;
+  let lista = CATS;
+  if (niv !== "todas") lista = lista.filter(c => c.nivel.toLowerCase() === niv);
+  if (q) lista = lista.filter(c =>
+    (c.ruta || c.nombre).toLowerCase().includes(q) || c.id.toLowerCase().includes(q));
+  const MAX = 1000;
+  $cat.innerHTML = lista.slice(0, MAX).map(c =>
+    `<option value="${c.id}">[${c.nivel}] ${esc(c.ruta || c.nombre)} · ${c.id}</option>`).join("");
+  $count.textContent = lista.length + " categorías" +
+    (lista.length > MAX ? ` (mostrando ${MAX}, refiná el filtro)` : "");
+  actualizarLink();
+}
+
+async function buscar() {
+  const id = $cat.value;
+  if (!id) { $status.textContent = "Elegí una categoría de la lista."; return; }
+  $go.disabled = true;
+  $grid.innerHTML = "";
+  $status.textContent = "Buscando… (puede tardar unos segundos)";
+  try {
+    const r = await fetchJSON(`${API}/mas-vendidos/${id}`);
+    if (!r.ok) {
+      const err = await r.json().catch(() => ({}));
+      $status.textContent = "Error " + r.status + ": " + (err.detail || "no disponible");
+      return;
+    }
+    const data = await r.json();
+    $status.textContent = `${data.cantidad} productos · ${data.categoria}` + (data.cacheado ? " (cache)" : "");
+    if (data.url) { $verlink.href = data.url; $verlink.style.display = "inline"; }
+    const m = p => p.moneda || "$";
+    $grid.innerHTML = data.productos.map(p => `
+      <div class="card">
+        <img src="${p.imagen || ''}" alt="" onerror="this.style.visibility='hidden'">
+        <div class="body">
+          <span class="rank">#${p.ranking} más vendido</span>
+          <a class="title" href="${p.link}" target="_blank">${p.titulo}</a>
+          <span class="price">${m(p)}${p.precio}
+            ${p.precio_original ? `<s style="color:#999;font-size:12px;font-weight:400;">${m(p)}${p.precio_original}</s>` : ""}
+            ${p.descuento ? `<span style="color:#00a650;font-size:12px;">${p.descuento}</span>` : ""}
+          </span>
+          ${p.cuotas ? `<span style="font-size:11px;color:#666;">${p.cuotas}</span>` : ""}
+          <span style="font-size:11px;color:#666;">${p.rating ? "⭐ "+p.rating : ""} ${p.vendidos ? "· "+p.vendidos : ""}</span>
+          <span class="seller">${p.vendedor || ''}</span>
+        </div>
+      </div>`).join("");
+  } catch (e) {
+    $status.textContent = "Error de conexión con el backend.";
+  } finally {
+    $go.disabled = false;
+  }
+}
+
+$go.addEventListener("click", buscar);
+$filtro.addEventListener("input", renderOpciones);
+$nivel.addEventListener("change", renderOpciones);
+$pais.addEventListener("change", cargarCategorias);
+$cat.addEventListener("change", actualizarLink);
+cargarCategorias();
+</script>
+</body>
+</html>

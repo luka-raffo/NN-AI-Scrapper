@@ -1,0 +1,41 @@
+# ===== Binarios / túneles (descargables, no van a git) =====
+*.exe
+cloudflared.exe
+ngrok.exe
+
+# ===== Dumps crudos de categorías (~45MB c/u) =====
+# Se versiona el derivado liviano: categorias_ar/mx/uy/br.json
+HTTP_Request*.json
+
+# ===== Python =====
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+.Python
+
+# ===== Salidas del scraper por lote (regenerables) =====
+resultados_l1.json
+resultados_l1.xlsx
+debug/
+
+# ===== Perfiles de navegador (scraper_browser) =====
+chrome-profile/
+selenium-profile/
+
+# ===== Logs y link generado por el guardián (locales) =====
+*.log
+LINK DE LA APP.txt
+
+# ===== Secretos =====
+.env
+*.env
+*secret*
+*token*
+
+# ===== OS =====
+Thumbs.db
+.DS_Store
+desktop.ini
