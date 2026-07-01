@@ -12,6 +12,10 @@ debug/
 # Binarios pesados (cloudflared se descarga aparte, ver README)
 *.exe
 
+# Accesos directos generados por "Crear Acceso Directo.bat" (ruta absoluta,
+# especifica de cada PC/clon del repo — no se versionan)
+*.lnk
+
 # Secretos (este proyecto NO usa, pero por las dudas)
 .env
 .env.*

@@ -74,6 +74,12 @@ Un solo archivo HTML con CSS y JavaScript vanilla (sin React/librerías). Partes
 - **Búsqueda:** al tocar "Iniciar búsqueda", por **cada fuente en paralelo**
   llama a `GET /mas-vendidos-pais?ref=<ID_AR>&pais=<AR|MX|UY|BR>` y pinta una
   columna por país con sus productos (o un aviso "sin equivalente" / error).
+- **"Seguimiento" y "Elegir Category" (deshabilitados):** el tab
+  "Seguimiento" y el selector "Elegir Category" de cada tarjeta de producto
+  son una simulación de UI (guardan estado solo en memoria del navegador,
+  sin backend ni integración real con Slack). Como todavía no están
+  implementados de verdad, quedan con `disabled` en el HTML (no se pueden
+  clickear/seleccionar) hasta que se conecte la lógica real.
 - **Link a la publicación:** cada producto del backend trae el campo `link`
   (en Amazon, la URL del producto; ver `amazon_fetch.py`). `backendToCard` lo
   copia a la tarjeta y `productCard()` envuelve la **imagen y el título** en un
@@ -317,6 +323,10 @@ Recursos/
 ---
 
 ## 10. Limitaciones conocidas
+
+> Detalle completo (con tiempos, retries y backoff exactos, y qué aplica a
+> cualquier scraper vs. qué es específico de este proyecto):
+> [LIMITACIONES_SCRAPING.md](LIMITACIONES_SCRAPING.md)
 
 1. **Depende de la PC encendida** con el backend + túnel corriendo.
 2. **URL del túnel gratis cambia** al reiniciarse (solucionable con URL fija).

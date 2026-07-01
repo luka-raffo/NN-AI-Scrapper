@@ -2049,13 +2049,14 @@ body.top-panel-collapsed .top-panel-toggle__icon .toggle-chevron{
   cursor:pointer;
   transition:background .14s ease, color .14s ease, border-color .14s ease, box-shadow .14s ease;
 }
-.app-view-btn:hover{ background:#ffffff; border-color:#cbd9ec; }
+.app-view-btn:hover:not(:disabled){ background:#ffffff; border-color:#cbd9ec; }
 .app-view-btn.is-active{
   background:#102f59;
   color:#ffffff;
   border-color:#102f59;
   box-shadow:0 6px 14px rgba(16,47,89,.12);
 }
+.app-view-btn:disabled{ opacity:.46; cursor:not-allowed; box-shadow:none; }
 .view-pane{ display:none; }
 .view-pane.is-active{ display:block; }
 .product-card{ min-height:354px !important; height:auto !important; }
@@ -2067,6 +2068,7 @@ body.top-panel-collapsed .top-panel-toggle__icon .toggle-chevron{
   font-weight:900; padding:0 8px; outline:none; cursor:pointer; appearance:auto;
 }
 .category-picker:focus{ border-color:#b9cae1; box-shadow:0 0 0 3px rgba(18,62,116,.08); }
+.category-picker:disabled{ opacity:.46; cursor:not-allowed; }
 .send-slack-btn{
   width:100%; min-height:28px; display:inline-flex; align-items:center; justify-content:center; gap:6px;
   border:1px solid #dbe5f1; background:linear-gradient(180deg,#ffffff 0%,#f5f8fc 100%);
@@ -3100,7 +3102,7 @@ input[type="checkbox"]{
       </label>
       <div class="app-view-nav" aria-label="Navegación de vistas">
         <button class="app-view-btn is-active" type="button" data-view="search">Búsqueda</button>
-        <button class="app-view-btn" type="button" data-view="tracking">Seguimiento</button>
+        <button class="app-view-btn" type="button" data-view="tracking" disabled title="Próximamente: todavía no está implementado">Seguimiento</button>
       </div>
     </div>
     <div class="tree-wrap">
@@ -3758,7 +3760,7 @@ function productCard(product) {
       </div>
       <div class="product-seller">Vendedor: ${escapeHtml(product.seller || 'Sin dato')}</div>
       <div class="product-actions">
-        <select class="category-picker" aria-label="Elegir Category">
+        <select class="category-picker" aria-label="Elegir Category" disabled title="Próximamente: todavía no está implementado">
           <option value="">Elegir Category</option>
           ${CATEGORY_CONTACTS.map(category => `<option value="${escapeAttr(category)}">${escapeHtml(category)}</option>`).join('')}
         </select>

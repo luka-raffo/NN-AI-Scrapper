@@ -19,6 +19,7 @@ Recursos/
 ```
 
 > **Documentación completa:** [Recursos/DOCUMENTACION_TECNICA.md](Recursos/DOCUMENTACION_TECNICA.md)
+> **Limitaciones del scraping (general → específico de este proyecto):** [Recursos/LIMITACIONES_SCRAPING.md](Recursos/LIMITACIONES_SCRAPING.md)
 
 ## Levantar rápido (local) — front + back en un solo paso
 
@@ -34,6 +35,13 @@ nada por separado**: un solo proceso corre las dos cosas.
 3. Listo: instala automáticamente lo que falte, levanta el backend+web en
    `http://127.0.0.1:8000/` y **abre el navegador solo**.
 4. Para detenerlo: cerrá la ventana o Ctrl+C.
+
+> **Icono propio (opcional):** Windows no permite ponerle un ícono a un
+> `.bat` directamente (siempre muestra el de `cmd.exe`). Para tener un
+> lanzador con el logo de la app, hacé doble clic **una sola vez** en
+> `Crear Acceso Directo.bat` (misma carpeta) — crea `Iniciar App.lnk` con el
+> ícono de `nuevos_negocios_ai_icono_windows.ico`. De ahí en más, usá ese
+> acceso directo en vez de `start.bat`.
 
 ### Opción 2 — manual (PowerShell/CMD)
 
