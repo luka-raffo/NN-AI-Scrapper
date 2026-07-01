@@ -39,13 +39,28 @@ abiertas y tu PC encendida, funciona desde cualquier lado.
 
 ## Uso solo LOCAL (en tu PC, sin internet)
 
+**Como un programa de escritorio (recomendado):**
+
+```text
+1. Doble clic (una sola vez)  en  "Crear Acceso Directo.bat"
+2. De ahi en mas, doble clic en  "Iniciar App.lnk"  (icono propio)
+```
+
+`Iniciar App.lnk` corre `Iniciar App.vbs`, que **no muestra ninguna ventana
+de CMD**: instala dependencias si faltan, levanta el backend oculto (o
+detecta que ya está corriendo, sin duplicarlo) y en **todos los casos abre
+el navegador** con la app en `http://127.0.0.1:8000/`. Para cerrarla, doble
+clic en `Detener App.vbs`.
+
+**Con la consola visible (para debug):**
+
 ```text
 Doble clic en  start.bat
 ```
 
-Ese único doble clic instala las dependencias que falten, levanta el backend
-(que también sirve la web) y **abre el navegador solo** en
-`http://127.0.0.1:8000/`. Front y back quedan corriendo con un solo paso.
+Mismo resultado (instala dependencias, levanta backend+web, abre navegador)
+pero mostrando la ventana con los logs — útil si algo falla y `Iniciar
+App.vbs` solo te muestra un cartel de error genérico.
 
 Si preferís hacerlo a mano: `py -m pip install -r requirements.txt` y luego
 `py -m uvicorn api:app --host 0.0.0.0 --port 8000`, y abrís

@@ -16,6 +16,9 @@ debug/
 # especifica de cada PC/clon del repo — no se versionan)
 *.lnk
 
+# Log del lanzador silencioso (Iniciar App.vbs / iniciar_silencioso.bat)
+app.log
+
 # Secretos (este proyecto NO usa, pero por las dudas)
 .env
 .env.*

@@ -268,10 +268,22 @@ Si nada matchea → la columna de ese país muestra "sin categoría equivalente"
   > dominio) o **Tailscale Funnel** (gratis, sin dominio, requiere instalar
   > Tailscale con permisos de admin).
 - **Scripts:**
-  - `start.bat` → uso local con **un solo doble clic**: detecta Python
-    (`py`/`python`), instala `requirements.txt` si falta algo, levanta el
-    backend (que también sirve la web) y **abre el navegador solo** en
-    `http://127.0.0.1:8000/`. No requiere tocar la terminal.
+  - `Iniciar App.vbs` (vía el acceso directo `Iniciar App.lnk`, generado una
+    vez con `Crear Acceso Directo.bat`) → el lanzador pensado para el usuario
+    final: **sin ventana de CMD visible**. Chequea `GET /health`; si el
+    backend no responde, lanza `iniciar_silencioso.bat` oculto
+    (`WScript.Shell.Run ..., 0, False`) y espera hasta ~25s a que levante; si
+    ya estaba corriendo, no lo duplica. En **todos los casos** termina
+    abriendo el navegador en `http://127.0.0.1:8000/`. Si falla (p. ej. no
+    hay Python), como no hay consola visible muestra un `MsgBox` de error
+    sugiriendo correr `start.bat` para ver el detalle. El log de esa
+    ejecución oculta queda en `app.log` (se sobreescribe cada vez).
+  - `Detener App.vbs` → mata el proceso que esté escuchando en el puerto 8000
+    (`detener_silencioso.bat`, por PID vía `netstat`/`taskkill`). Hace falta
+    porque sin consola visible ya no hay Ctrl+C.
+  - `start.bat` → mismo resultado (instala dependencias, levanta backend+web,
+    abre el navegador) pero con la **consola visible** — queda como opción de
+    diagnóstico si `Iniciar App.vbs` falla.
   - `tunnel.bat` → solo el túnel.
   - `PUBLICO.bat` → backend + túnel juntos.
   - `MANTENER ONLINE.bat` → "guardián": mantiene backend + túnel, los reinicia

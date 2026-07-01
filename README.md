@@ -26,22 +26,23 @@ Recursos/
 El backend sirve la web (front) directamente, así que **no hay que levantar
 nada por separado**: un solo proceso corre las dos cosas.
 
-### Opción 1 — un doble clic (recomendada)
+### Opción 1 — un doble clic, como cualquier programa (recomendada)
 
 1. Instalá [Python 3](https://www.python.org/downloads/) si no lo tenés
    (al instalar, tildá **"Add python.exe to PATH"**).
-2. Entrá a la carpeta `Recursos/Scrapper Meli L1/` y hacé **doble clic en
-   `start.bat`**.
-3. Listo: instala automáticamente lo que falte, levanta el backend+web en
-   `http://127.0.0.1:8000/` y **abre el navegador solo**.
-4. Para detenerlo: cerrá la ventana o Ctrl+C.
+2. Entrá a `Recursos/Scrapper Meli L1/` y hacé doble clic **una sola vez** en
+   `Crear Acceso Directo.bat` — crea el ícono **`Iniciar App.lnk`** (con el
+   logo de la app) en esa misma carpeta.
+3. De ahí en adelante, usá **ese ícono** para abrir la app: **no se ve
+   ninguna ventana de CMD** — queda corriendo oculto e **abre el navegador
+   solo** en `http://127.0.0.1:8000/`, en **cada click** (si ya estaba
+   corriendo, no lo vuelve a levantar; solo reabre el navegador).
+4. Para cerrarla: doble clic en `Detener App.vbs` (misma carpeta).
 
-> **Icono propio (opcional):** Windows no permite ponerle un ícono a un
-> `.bat` directamente (siempre muestra el de `cmd.exe`). Para tener un
-> lanzador con el logo de la app, hacé doble clic **una sola vez** en
-> `Crear Acceso Directo.bat` (misma carpeta) — crea `Iniciar App.lnk` con el
-> ícono de `nuevos_negocios_ai_icono_windows.ico`. De ahí en más, usá ese
-> acceso directo en vez de `start.bat`.
+Si algo falla (p. ej. Python no instalado), como no hay ventana visible se
+muestra un cartel de error con la indicación de correr `start.bat` para ver
+el detalle. `start.bat` sigue disponible tal cual estaba: igual que la
+opción de arriba pero con la consola visible (útil para diagnosticar).
 
 ### Opción 2 — manual (PowerShell/CMD)
 
