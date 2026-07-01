@@ -43,8 +43,14 @@ abiertas y tu PC encendida, funciona desde cualquier lado.
 Doble clic en  start.bat
 ```
 
-Luego abrí `http://127.0.0.1:8000/` en el navegador (la web se sirve desde ahí).
-O abrí el archivo `htmlMvpNuevosNegociosAI.html` directo (también apunta a localhost).
+Ese único doble clic instala las dependencias que falten, levanta el backend
+(que también sirve la web) y **abre el navegador solo** en
+`http://127.0.0.1:8000/`. Front y back quedan corriendo con un solo paso.
+
+Si preferís hacerlo a mano: `py -m pip install -r requirements.txt` y luego
+`py -m uvicorn api:app --host 0.0.0.0 --port 8000`, y abrís
+`http://127.0.0.1:8000/` en el navegador. También podés abrir el archivo
+`htmlMvpNuevosNegociosAI.html` directo (apunta a `localhost` solo).
 
 ---
 

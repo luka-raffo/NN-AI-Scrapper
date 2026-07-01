@@ -20,7 +20,22 @@ Recursos/
 
 > **Documentación completa:** [Recursos/DOCUMENTACION_TECNICA.md](Recursos/DOCUMENTACION_TECNICA.md)
 
-## Levantar rápido (local)
+## Levantar rápido (local) — front + back en un solo paso
+
+El backend sirve la web (front) directamente, así que **no hay que levantar
+nada por separado**: un solo proceso corre las dos cosas.
+
+### Opción 1 — un doble clic (recomendada)
+
+1. Instalá [Python 3](https://www.python.org/downloads/) si no lo tenés
+   (al instalar, tildá **"Add python.exe to PATH"**).
+2. Entrá a la carpeta `Recursos/Scrapper Meli L1/` y hacé **doble clic en
+   `start.bat`**.
+3. Listo: instala automáticamente lo que falte, levanta el backend+web en
+   `http://127.0.0.1:8000/` y **abre el navegador solo**.
+4. Para detenerlo: cerrá la ventana o Ctrl+C.
+
+### Opción 2 — manual (PowerShell/CMD)
 
 ```powershell
 cd "Recursos/Scrapper Meli L1"
@@ -29,6 +44,9 @@ py -m uvicorn api:app --host 0.0.0.0 --port 8000
 ```
 
 Abrí http://127.0.0.1:8000/ — la web se sirve desde el backend.
+
+> Requisito único: **Python 3.9+** instalado. No hace falta Node, npm ni
+> ningún otro runtime — el front es HTML/JS plano sin build.
 
 ## Publicar en internet
 

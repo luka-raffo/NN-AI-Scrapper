@@ -65,16 +65,32 @@ Un solo archivo HTML con CSS y JavaScript vanilla (sin React/librerías). Partes
   construye el árbol (Vertical → L1 → L2 → … hasta L7) con los **IDs reales** de
   ML (`MLA…`). Si el backend no responde, usa un árbol local de respaldo.
 - **Selección:** el usuario elige una categoría (hoja) + "tipo de búsqueda" +
-  una o más **fuentes** (ML Argentina / México / Uruguay / Brasil).
+  una o más **fuentes**. Fuentes de MercadoLibre (ML Argentina / México /
+  Uruguay / Brasil) y de **Amazon (Amazon US / Amazon MX / Amazon India)**. Cada
+  fuente Amazon se mapea a su `site` del backend vía `AMAZON_SITE`
+  (`Amazon US→US`, `Amazon MX→MX`, `Amazon India→IN`) y su marca/país/moneda/
+  bandera salen de `MARKET_INFO`. Sumar otra Amazon en el front es agregar el
+  checkbox + una fila en `AMAZON_SITE` y otra en `MARKET_INFO`.
 - **Búsqueda:** al tocar "Iniciar búsqueda", por **cada fuente en paralelo**
   llama a `GET /mas-vendidos-pais?ref=<ID_AR>&pais=<AR|MX|UY|BR>` y pinta una
   columna por país con sus productos (o un aviso "sin equivalente" / error).
+- **Link a la publicación:** cada producto del backend trae el campo `link`
+  (en Amazon, la URL del producto; ver `amazon_fetch.py`). `backendToCard` lo
+  copia a la tarjeta y `productCard()` envuelve la **imagen y el título** en un
+  `<a target="_blank">` cuando `link` existe, así un click abre la publicación
+  original en una pestaña nueva. Si el producto no trae `link`, la tarjeta se
+  renderiza sin anchor (no clickeable). Estilos en `.product-link`.
 - **Detección automática del backend (`API_BASE`):**
   - Si la página se sirve por http(s) (desde el túnel) → usa el **mismo origen**.
   - Si se abre como archivo local → `http://127.0.0.1:8000`.
   - Se puede forzar con `?api=https://...` o `localStorage.apiBase`.
-- **Scroll:** la barra de categorías es *sticky* con scroll propio; el resto de
-  la página scrollea normal (importante porque el árbol AR tiene ~12.000 nodos).
+- **Scroll (desktop ≥901px):** el viewport está bloqueado (no hay scroll de página).
+  El panel de categorías tiene scroll interno propio (árbol de ~12k nodos scrollea
+  dentro del panel, que queda fijo). Los resultados tienen **un único scrollbar
+  vertical** en el contenedor `.results-scroll` que mueve todas las columnas de
+  ecommerce al mismo tiempo; la cabecera de cada país (bandera + logo) queda sticky
+  al tope al hacer scroll. El contenedor `.results-scroll` también hace scroll
+  horizontal cuando hay más columnas de las que caben en el ancho disponible.
 
 ### 3.2 Backend — `api.py` (FastAPI + Uvicorn)
 Expone la API y **sirve el propio HTML**. Responsabilidades:
@@ -107,6 +123,41 @@ un *lock* por categoría para no scrapear la misma cosa dos veces en paralelo.
   API oficial de categorías de ML: cada nodo con su `path_from_root` y sus hijos).
 - `NN AI - Verticales MELI.csv`: catálogo curado anterior (verticales Bidcom),
   usado solo como respaldo si no existe `categorias_ar.json`.
+
+### 3.5 Motor de Amazon — `amazon_fetch.py`
+Suma **Amazon US (amazon.com)**, **Amazon México (amazon.com.mx)** y
+**Amazon India (amazon.in)** como fuentes extra, con la **misma técnica** que ML:
+`curl_cffi` con `impersonate="chrome"` (fingerprint TLS de un Chrome real) para
+saltar el anti-bot, sin proxies.
+
+- **Modelo "buscar por nombre + más vendidos":** Amazon no tiene una página de
+  "más vendidos por categoría" equivalente a la de ML. Por eso, por cada categoría
+  se **busca su NOMBRE** en el buscador de Amazon y se aplica el filtro nativo
+  **"Ordenar por: Los más vendidos"** (Best Sellers en US). Trae exactamente los
+  productos, y en el mismo orden, que vería un usuario al buscar ese nombre y
+  cambiar el dropdown de *Destacados* a *Los más vendidos*.
+- **Cómo se aplica el orden:** se agrega `&s=exact-aware-popularity-rank` a la URL
+  de búsqueda (`/s?k=<nombre>&s=...`). Ese valor es el que Amazon usa para el
+  dropdown "Los más vendidos" / "Best Sellers". El orden de los resultados se
+  **respeta tal cual lo devuelve Amazon** (no se reordena del lado del backend).
+- **Sitios soportados (`SITES`):** `US` → amazon.com (USD, US$), `MX` →
+  amazon.com.mx (MXN, $), `IN` → amazon.in (INR, ₹). Sumar otro país es agregar una
+  fila a este dict (host, Accept-Language, moneda, lc-main, símbolo, nombre); el
+  endpoint y el resto del motor lo toman automáticamente.
+- **Locale correcto:** setea cookies `i18n-prefs` (USD/MXN/INR) y `lc-main`
+  (en_US/es_MX/en_IN) y hace un *warm-up* a la home antes de buscar, para obtener
+  precios en la moneda correcta del país.
+- **Señal informativa:** se extrae "X comprados el mes pasado" / "X bought in past
+  month" de cada tarjeta y se muestra como dato (`vendidos`), pero **no** se usa
+  para reordenar (el orden ya lo da el filtro de Amazon).
+- **Parseo (`parsear_resultados`):** de cada `s-search-result` saca asin, título,
+  precio, precio original, rating, reviews, imagen, link y la señal de comprados.
+- **Anti-bloqueo:** detecta captcha/HTML parcial y reintenta con *backoff*. La
+  respuesta se cachea 10 min igual que ML (clave `AMZ:<site>:<query>`).
+
+> Nota: como la búsqueda usa el **nombre literal** de la categoría, los nombres
+> ambiguos pueden traer resultados de otro rubro (ej. "Notebooks" → cuadernos).
+> Nombres específicos ("Parlantes", "Auriculares") funcionan bien.
 
 ---
 
@@ -175,6 +226,7 @@ Si nada matchea → la columna de ese país muestra "sin categoría equivalente"
 | `GET` | `/categorias?pais=&nivel=` | Catálogo plano (lista) por país/nivel. |
 | `GET` | `/mas-vendidos/{cat_id}` | Más vendidos de un ID exacto. `?nocache=1` ignora caché. |
 | `GET` | `/mas-vendidos-pais?ref=&pais=` | Resuelve el equivalente de `ref` en `pais` y scrapea. |
+| `GET` | `/amazon?q=&site=US\|MX\|IN` | Busca `q` (nombre de categoría) en Amazon y trae los **más vendidos** (filtro nativo de Amazon). |
 | `POST`| `/mas-vendidos` | Igual que el GET por ID, con body `{"categoria":"MLA1000"}`. |
 | `GET` | `/paises` | Lista de países soportados. |
 | `GET` | `/api` | Info del servicio. |
@@ -210,7 +262,10 @@ Si nada matchea → la columna de ese país muestra "sin categoría equivalente"
   > dominio) o **Tailscale Funnel** (gratis, sin dominio, requiere instalar
   > Tailscale con permisos de admin).
 - **Scripts:**
-  - `start.bat` → solo el backend (uso local).
+  - `start.bat` → uso local con **un solo doble clic**: detecta Python
+    (`py`/`python`), instala `requirements.txt` si falta algo, levanta el
+    backend (que también sirve la web) y **abre el navegador solo** en
+    `http://127.0.0.1:8000/`. No requiere tocar la terminal.
   - `tunnel.bat` → solo el túnel.
   - `PUBLICO.bat` → backend + túnel juntos.
   - `MANTENER ONLINE.bat` → "guardián": mantiene backend + túnel, los reinicia
@@ -232,6 +287,7 @@ Recursos/
 ├─ INTEGRACION.md                   ← cómo levantarla / publicarla
 └─ Scrapper Meli L1/
    ├─ api.py                        ← backend FastAPI (endpoints + resolver + caché)
+   ├─ amazon_fetch.py               ← motor de Amazon US/MX/IN (buscar nombre + "más vendidos")
    ├─ meli_fetch.py                 ← motor de descarga (curl_cffi + proof-of-work)
    ├─ meli_common.py                ← carga de catálogos + parseo de productos
    ├─ scraper_l1.py                 ← scraper por lote (CLI, opcional)
@@ -252,6 +308,9 @@ Recursos/
 - **Frontend:** HTML5, CSS3, JavaScript vanilla (sin build, sin dependencias).
 - **Backend:** Python 3 · FastAPI · Uvicorn · Pydantic.
 - **Scraping:** curl_cffi (TLS impersonation) · BeautifulSoup4 · lxml · pandas/openpyxl.
+  - ML: proof-of-work de DataDome sobre la página `/mas-vendidos/<id>`.
+  - Amazon (US/MX/IN): búsqueda por nombre con filtro `s=exact-aware-popularity-rank`
+    ("Los más vendidos").
 - **Exposición:** Cloudflare Tunnel (cloudflared).
 - **Sin base de datos:** los catálogos son archivos JSON y la caché es en memoria.
 

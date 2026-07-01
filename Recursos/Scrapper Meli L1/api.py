@@ -41,11 +41,12 @@ import unicodedata
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from pydantic import BaseModel
 
 import meli_common as mc
 import meli_fetch as mf
+import amazon_fetch as af
 
 CACHE_TTL_S = 600          # 10 min: respuestas cacheadas para no re-scrapear de mas
 CAT_ID_RE = re.compile(r"^ML[ABMU]\d+$")  # A=Argentina B=Brasil M=Mexico U=Uruguay
@@ -368,8 +369,11 @@ def _resolver(cat_id: str, nocache: bool):
 @app.get("/")
 def root():
     # Sirve la web directamente desde el backend: una sola URL publica para todos.
+    # HTMLResponse con no-store evita que el browser cachee el HTML durante desarrollo.
     if os.path.exists(HTML_FILE):
-        return FileResponse(HTML_FILE, media_type="text/html")
+        with open(HTML_FILE, encoding="utf-8") as f:
+            content = f.read()
+        return HTMLResponse(content, headers={"Cache-Control": "no-store"})
     return {
         "servicio": "Scrapper Meli - mas vendidos a demanda",
         "uso": "GET /mas-vendidos/MLA1000",
@@ -465,6 +469,53 @@ def mas_vendidos_pais(ref: str = Query(...), pais: str = Query(...),
     payload["ref"] = ref
     payload["equivalente_id"] = equivalente
     return payload
+
+
+@app.get("/amazon")
+def amazon(q: str = Query(...), site: str = Query("US"), nocache: int = Query(0)):
+    """Más vendidos de Amazon para una categoría: busca el NOMBRE en el buscador
+    de Amazon (site=US -> amazon.com, MX -> amazon.com.mx, IN -> amazon.in) con el
+    filtro nativo "Los más vendidos" (Best Sellers)."""
+    site = (site or "US").upper()
+    if site not in af.SITES:
+        validos = "|".join(af.SITES)
+        raise HTTPException(status_code=400, detail=f"Site Amazon inválido: '{site}' ({validos}).")
+    q = (q or "").strip()
+    if not q:
+        raise HTTPException(status_code=400, detail="Falta el parámetro 'q' (nombre de categoría).")
+
+    key = f"AMZ:{site}:{q.lower()}"
+    if not nocache:
+        hit = _cache.get(key)
+        if hit and (time.time() - hit[0]) < CACHE_TTL_S:
+            payload = dict(hit[1]); payload["cacheado"] = True
+            return payload
+
+    with _lock_de(key):
+        if not nocache:
+            hit = _cache.get(key)
+            if hit and (time.time() - hit[0]) < CACHE_TTL_S:
+                payload = dict(hit[1]); payload["cacheado"] = True
+                return payload
+
+        estado, productos = af.buscar(q, site, max_retries=3, backoff_base=5, backoff_max=15)
+        if estado == "bloqueado":
+            raise HTTPException(status_code=503,
+                                detail="Amazon bloqueó la consulta. Reintentá en unos segundos.")
+
+        payload = {
+            "fuente": "amazon",
+            "site": site,
+            "pais": af.PAIS_NOMBRE.get(site, site),
+            "query": q,
+            "categoria": q,
+            "encontrado": True,
+            "cantidad": len(productos),
+            "cacheado": False,
+            "productos": productos,
+        }
+        _cache[key] = (time.time(), payload)
+        return payload
 
 
 @app.get("/mas-vendidos/{cat_id}")

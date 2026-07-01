@@ -41,7 +41,14 @@ un resultado si obtiene **más** productos que el guardado.
 ## Backend a demanda (API web)
 
 Para consultar **una categoría desde la web** y traer sus más vendidos al
-instante, hay un backend FastAPI que reutiliza el mismo motor:
+instante, hay un backend FastAPI que reutiliza el mismo motor y **además
+sirve la propia web** (front + back en un solo proceso, sin CORS).
+
+**Más simple — un doble clic:** con Python instalado, doble clic en
+`start.bat`. Instala dependencias si faltan, levanta el servidor y abre el
+navegador solo en `http://127.0.0.1:8000/`.
+
+**Manual:**
 
 ```powershell
 # Levantar el servidor (queda escuchando)

@@ -4,24 +4,16 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Explorador de Categorías | Nuevos Negocios AI</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 
 :root {
-  /* Paleta principal Bidcom */
-  --bidcom-blue: #0000D4;       /* Azul Medio */
-  --bidcom-blue-dark: #000091;  /* Azul Marino */
-  --bidcom-blue-deep: #00006F;  /* Azul Noche */
-  --bidcom-electric: #0000FF;   /* Azul Eléctrico */
-  --bidcom-vibrant: #0051FF;    /* Azul Vibrante */
-  --bidcom-cyan: #00A1FF;       /* Azul Celeste/Cian */
-  --bidcom-indigo: #5300FF;     /* Violeta Azulado */
+  --bidcom-blue: #0046d5;
+  --bidcom-blue-dark: #00358f;
+  --bidcom-blue-deep: #052b78;
   --white: #ffffff;
   --white-soft: rgba(255, 255, 255, 0.82);
   --line-soft: rgba(255, 255, 255, 0.24);
-  --yellow: #00A1FF;            /* Cian como color de acento */
+  --yellow: #ffc20e;
 }
 
 * { box-sizing: border-box; }
@@ -30,7 +22,7 @@ body {
   margin: 0;
   min-height: 100vh;
   background: #edf2f8;
-  font-family: 'Montserrat', 'Open Sans', Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
   color: #102033;
 }
 
@@ -44,8 +36,8 @@ body {
   padding: 0 28px;
   color: var(--white);
   background:
-    radial-gradient(circle at 78% 18%, rgba(0, 161, 255, 0.40) 0%, rgba(0, 161, 255, 0) 34%),
-    linear-gradient(90deg, var(--bidcom-blue-deep) 0%, var(--bidcom-blue) 52%, var(--bidcom-vibrant) 100%);
+    radial-gradient(circle at 78% 18%, rgba(72, 151, 255, 0.46) 0%, rgba(72, 151, 255, 0) 34%),
+    linear-gradient(90deg, var(--bidcom-blue-deep) 0%, var(--bidcom-blue) 52%, #0872ff 100%);
   box-shadow:
     0 12px 28px rgba(7, 34, 89, 0.22),
     inset 0 -1px 0 rgba(255, 255, 255, 0.18);
@@ -176,8 +168,8 @@ body {
   width: 8px;
   height: 8px;
   border-radius: 999px;
-  background: #22c55e;
-  box-shadow: 0 0 0 4px rgba(34, 197, 94, .22);
+  background: var(--yellow);
+  box-shadow: 0 0 0 4px rgba(255, 194, 14, .16);
 }
 
 @media (max-width: 980px) {
@@ -214,7 +206,7 @@ body {
   --line-strong:#d8e1ee;
   --soft-blue:#eef5ff;
   --soft-blue-2:#f7faff;
-  --active-blue:#000091;
+  --active-blue:#123e74;
   --shadow-panel:0 1px 3px rgba(16,37,87,.06), 0 14px 32px rgba(16,37,87,.08);
   --shadow-soft:0 8px 24px rgba(16,37,87,.06);
 }
@@ -832,7 +824,7 @@ body.sidebar-collapsed .sidebar-toggle__icon{
   min-height:38px;
   padding:0 20px;
   border:1px solid rgba(255,255,255,.14);
-  background:linear-gradient(90deg, #00006F 0%, #000091 50%, #0000D4 100%);
+  background:linear-gradient(90deg, #0e2e57 0%, #123e74 56%, #1b5ba8 100%);
   color:#ffffff;
   font-family:inherit;
   font-size:12.5px;
@@ -1070,8 +1062,8 @@ body.top-panel-collapsed .results-context-summary{
   justify-content:space-between;
   gap:10px;
   padding:10px 11px;
-  border-bottom:1px solid #c8d0f0;
-  background:linear-gradient(90deg,#eeeeff 0%,#f0f0ff 100%);
+  border-bottom:1px solid #e6edf6;
+  background:#fff9db;
 }
 
 .market-column__brand{
@@ -1152,7 +1144,7 @@ body.top-panel-collapsed .results-context-summary{
   overflow:hidden;
   display:flex;
   flex-direction:column;
-  height:300px;
+  min-height:300px;
   transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
 }
 .product-card:hover{
@@ -1224,13 +1216,6 @@ body.top-panel-collapsed .results-context-summary{
   -webkit-box-orient:vertical;
   overflow:hidden;
 }
-/* Imagen/título clickeables cuando el producto trae link a la publicación. */
-.product-link{ color:inherit; text-decoration:none; cursor:pointer; display:block; }
-.product-card__media .product-link{ display:contents; }
-.product-link:hover .product-title,
-.product-title .product-link:hover{ color:#2563eb; text-decoration:underline; }
-.product-card__media .product-link img{ transition:transform .15s ease; }
-.product-card__media .product-link:hover img{ transform:scale(1.04); }
 .product-prices{
   display:flex;
   align-items:baseline;
@@ -1408,9 +1393,9 @@ body.top-panel-collapsed .results-context-summary{
   }
 
   .market-column__list{
-    max-height:calc(100vh - 370px);
+    max-height:none;
     min-height:0;
-    overflow:auto;
+    overflow:visible;
     display:grid;
     grid-template-columns:1fr;
     gap:10px;
@@ -1418,20 +1403,8 @@ body.top-panel-collapsed .results-context-summary{
   }
 
   .market-column__list::-webkit-scrollbar{
-    width:5px;
-  }
-
-  .market-column__list::-webkit-scrollbar-track{
-    background:transparent;
-  }
-
-  .market-column__list::-webkit-scrollbar-thumb{
-    background:rgba(151,165,186,.42);
-    border-radius:999px;
-  }
-
-  .market-column__list::-webkit-scrollbar-thumb:hover{
-    background:rgba(108,122,144,.55);
+    width:0;
+    height:0;
   }
 
   .product-card{
@@ -1491,17 +1464,10 @@ body.top-panel-collapsed .results-context-summary{
 }
 
 .market-column__list{
-  max-height:calc(100vh - 370px);
-  overflow:auto;
+  max-height:none !important;
+  overflow:visible !important;
   position:relative;
   z-index:1;
-}
-
-@media (max-width:900px) {
-  .market-column__list{
-    max-height:none;
-    overflow:visible;
-  }
 }
 
 .product-card{
@@ -2104,7 +2070,7 @@ body.top-panel-collapsed .top-panel-toggle__icon .toggle-chevron{
 .tracking-product__meta{ margin-top:4px; color:#6d7c90; font-size:10.5px; font-weight:800; }
 .status-pill{ display:inline-flex; align-items:center; min-height:24px; padding:0 8px; border:1px solid #dbe5f1; background:#f5f8fc; color:#123e74; font-size:10.5px; line-height:1; font-weight:900; white-space:nowrap; }
 .tracking-select{ min-height:32px; min-width:170px; border:1px solid #dbe5f1; background:#ffffff; color:#123e74; font-family:inherit; font-size:11.5px; font-weight:900; padding:0 8px; }
-.sourcing-btn{ min-height:32px; min-width:126px; border:1px solid #000091; background:linear-gradient(90deg,#000091 0%,#0051FF 100%); color:#ffffff; font-family:inherit; font-size:11px; font-weight:900; cursor:pointer; }
+.sourcing-btn{ min-height:32px; min-width:126px; border:1px solid #0f458c; background:linear-gradient(90deg,#123e74 0%,#0d58bd 100%); color:#ffffff; font-family:inherit; font-size:11px; font-weight:900; cursor:pointer; }
 .sourcing-btn:disabled{ color:#9aa8bb; background:#f5f8fc; border-color:#dbe5f1; cursor:not-allowed; }
 .sourcing-btn.is-started{ background:#f2fbf6; border-color:#cdebdc; color:#0d6b3f; }
 .tracking-empty{ padding:36px 18px; text-align:center; color:#728096; font-size:13px; font-weight:800; }
@@ -2378,677 +2344,6 @@ body.top-panel-collapsed .top-panel-toggle__icon .toggle-chevron{
   }
 }
 
-/* =========================
-   V24 · Fixes de scroll y responsive
-   - El explorador de categorías scrollea dentro de su panel.
-   - Con una sola fuente, los resultados ocupan todo el ancho en grilla responsive
-     (sin espacio desperdiciado) y todas las cards mantienen el mismo tamaño.
-========================= */
-.tree-wrap{
-  flex:1 1 auto;
-  min-height:0;
-}
-
-@media (min-width:901px){
-  /* Una sola fuente: el panel ocupa todo el ancho disponible... */
-  .results-card.is-single-source{
-    width:100% !important;
-    max-width:100% !important;
-  }
-  .results-card.is-single-source .market-results-grid{
-    grid-template-columns:1fr !important;
-    width:100% !important;
-  }
-  .results-card.is-single-source .market-column{
-    width:100% !important;
-    min-width:0 !important;
-  }
-  /* ...y las cards fluyen en una grilla responsive de ancho uniforme. */
-  .results-card.is-single-source .market-column__list{
-    display:grid !important;
-    grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)) !important;
-    gap:12px !important;
-    align-content:start !important;
-  }
-}
-
-/* =========================
-   V26 · Doble scroll (desktop): categorias propias + pagina entera
-   - La pagina entera scrollea normal (resultados incluidos).
-   - La barra de categorias queda fija a la izquierda y scrollea POR DENTRO,
-     asi se llega a cualquier categoria del arbol (~12k) sin trabarse.
-   - Padding inferior para que el ultimo producto / boton "Enviar Slack" no
-     quede tapado por la barra de tareas de Windows.
-========================= */
-@media (min-width:901px){
-  /* 1) Pagina con scroll normal (sin lock de viewport) */
-  html, body{
-    height:auto !important;
-    min-height:100% !important;
-    overflow-x:hidden !important;
-    overflow-y:auto !important;
-  }
-  .workspace{
-    height:auto !important;
-    max-height:none !important;
-    min-height:calc(100vh - 92px) !important;
-    overflow:visible !important;
-    align-items:start !important;
-  }
-
-  /* 2) Barra de categorias: fija a la izquierda, con SU PROPIO scroll */
-  .category-explorer{
-    position:sticky !important;
-    top:0 !important;
-    align-self:start !important;
-    height:calc(100vh - 92px) !important;
-    max-height:calc(100vh - 92px) !important;
-    overflow:hidden !important;
-    display:flex !important;
-    flex-direction:column !important;
-  }
-  .tree-wrap{
-    flex:1 1 auto !important;
-    min-height:0 !important;
-    height:auto !important;
-    max-height:none !important;
-    overflow-y:auto !important;
-    overflow-x:hidden !important;
-  }
-  .sidebar-rail{
-    position:sticky !important;
-    top:0 !important;
-    align-self:start !important;
-    height:calc(100vh - 92px) !important;
-  }
-
-  /* 3) Resultados: fluyen con el scroll de la pagina (sin recorte interno) */
-  .preview-area,
-  #searchView.view-pane.is-active,
-  #searchView .results-card,
-  #searchView .results-scroll,
-  #trackingView.view-pane.is-active,
-  #trackingView .tracking-card,
-  #trackingView .tracking-table-wrap{
-    height:auto !important;
-    max-height:none !important;
-    min-height:0 !important;
-    overflow:visible !important;
-  }
-
-  /* 4) Aire abajo: el ultimo producto/boton no queda tapado por la barra de tareas */
-  body{ padding-bottom:140px !important; }
-}
-
-
-
-/* =========================
-   V27 · Scroll por columna (definitivo desktop)
-   - El viewport queda bloqueado: header + categorias + panel de busqueda
-     siempre visibles sin hacer scroll de pagina.
-   - La barra de categorias tiene su propio scroll interno.
-   - El scroll de productos esta DENTRO de cada columna de ecommerce.
-   - results-scroll solo scrollea horizontalmente cuando hay mas columnas
-     de las que caben en el ancho disponible.
-========================= */
-@media (min-width:901px){
-
-  /* 1. Bloquear el scroll de pagina */
-  html, body{
-    height:100% !important;
-    overflow:hidden !important;
-    padding-bottom:0 !important;
-  }
-
-  /* 2. Workspace: altura fija = viewport - header */
-  .workspace{
-    height:calc(100dvh - 92px) !important;
-    max-height:calc(100dvh - 92px) !important;
-    min-height:0 !important;
-    overflow:hidden !important;
-    align-items:stretch !important;
-  }
-
-  /* 3. Categorias: columna flex con scroll interno */
-  .category-explorer{
-    position:static !important;
-    height:100% !important;
-    max-height:100% !important;
-    min-height:0 !important;
-    overflow:hidden !important;
-    display:flex !important;
-    flex-direction:column !important;
-  }
-
-  .tree-wrap{
-    flex:1 1 auto !important;
-    min-height:0 !important;
-    height:auto !important;
-    max-height:none !important;
-    overflow-y:auto !important;
-    overflow-x:hidden !important;
-  }
-
-  .sidebar-rail{
-    position:static !important;
-    height:100% !important;
-    align-self:auto !important;
-  }
-
-  /* 4. Preview area: columna flex que ocupa todo el alto */
-  .preview-area{
-    height:100% !important;
-    max-height:none !important;
-    min-height:0 !important;
-    overflow:hidden !important;
-    display:flex !important;
-    flex-direction:column !important;
-  }
-
-  /* 5. Vista de busqueda: ocupa el alto restante */
-  #searchView.view-pane.is-active{
-    flex:1 1 auto !important;
-    min-height:0 !important;
-    display:flex !important;
-    flex-direction:column !important;
-    overflow:hidden !important;
-    height:auto !important;
-    max-height:none !important;
-  }
-
-  #searchView .selection-card{
-    flex:0 0 auto !important;
-  }
-
-  #searchView .top-panel-rail{
-    flex:0 0 auto !important;
-  }
-
-  /* 6. Tarjeta de resultados: columna flex que llena el resto */
-  #searchView .results-card{
-    flex:1 1 auto !important;
-    min-height:0 !important;
-    display:flex !important;
-    flex-direction:column !important;
-    overflow:hidden !important;
-    height:auto !important;
-    max-height:none !important;
-    margin-top:0 !important;
-  }
-
-  #searchView .results-head{
-    flex:0 0 auto !important;
-  }
-
-  /* 7. results-scroll: solo scroll horizontal */
-  #searchView .results-scroll{
-    flex:1 1 auto !important;
-    min-height:0 !important;
-    height:auto !important;
-    max-height:none !important;
-    overflow-x:auto !important;
-    overflow-y:hidden !important;
-    overscroll-behavior:contain !important;
-  }
-
-  /* 8. Grilla: ocupa todo el alto del scroll container */
-  #searchView .market-results-grid{
-    height:100% !important;
-    align-items:stretch !important;
-  }
-
-  /* 9. Cada columna: flex vertical que llena el alto */
-  #searchView .market-column{
-    display:flex !important;
-    flex-direction:column !important;
-    height:100% !important;
-    overflow:hidden !important;
-    align-self:auto !important;
-    contain:layout style !important;
-  }
-
-  /* 10. Cabecera: fija al tope de la flex column (no necesita sticky) */
-  #searchView .market-column__head{
-    flex:0 0 auto !important;
-    position:static !important;
-  }
-
-  /* 11. Lista de productos: llena el resto y scrollea verticalmente */
-  #searchView .market-column__list{
-    flex:1 1 auto !important;
-    min-height:0 !important;
-    max-height:none !important;
-    height:auto !important;
-    overflow-y:auto !important;
-    overflow-x:hidden !important;
-    padding:10px !important;
-    background:#f7faff !important;
-  }
-}
-
-
-
-/* =========================
-   V28 · Scroll unificado (un solo scrollbar para todo el grid)
-   - El viewport sigue bloqueado (header + categorias siempre visibles).
-   - results-scroll tiene UN UNICO scrollbar vertical que mueve todas
-     las columnas de ecommerce al mismo tiempo.
-   - Cada cabecera de pais queda sticky al tope al hacer scroll.
-   - El scroll horizontal sigue funcionando si hay mas columnas que espacio.
-========================= */
-@media (min-width:901px){
-
-  /* 1. results-scroll: scroll vertical unificado + horizontal si es necesario */
-  #searchView .results-scroll{
-    overflow-x:auto !important;
-    overflow-y:auto !important;
-  }
-
-  /* 2. Grilla: crece con el contenido (height auto, no forzado al alto del container) */
-  #searchView .market-results-grid{
-    height:auto !important;
-    min-height:0 !important;
-    align-items:start !important;
-  }
-
-  /* 3. Cada columna: bloque normal, sin scroll propio ni containment */
-  #searchView .market-column{
-    height:auto !important;
-    overflow:visible !important;
-    contain:none !important;
-  }
-
-  /* 4. Cabecera de cada pais: sticky al tope del results-scroll al hacer scroll */
-  #searchView .market-column__head{
-    position:sticky !important;
-    top:0 !important;
-    z-index:2 !important;
-  }
-
-  /* 5. Lista de productos: se expande al contenido completo, sin scroll propio */
-  #searchView .market-column__list{
-    flex:0 0 auto !important;
-    height:auto !important;
-    max-height:none !important;
-    overflow-y:visible !important;
-    overflow-x:hidden !important;
-  }
-}
-
-
-
-/* =========================
-   V29 · Alineación de cards + posición del toggle de categorías
-   - Problema 1: height:auto !important en línea ~2053 rompía la altura
-     uniforme de las cards. Se pisa con height:300px !important.
-   - Problema 2: position:static de V27 en .sidebar-rail hacía que el botón
-     toggle (position:absolute) se ancle al body y quede en el centro
-     de la pantalla. Se restituye position:relative.
-   - Problema 3: cabeceras de columna de altura variable: se fija a 62px
-     para que card #1 arranque exactamente a la misma Y en todas las columnas.
-========================= */
-@media (min-width:901px){
-
-  /* 1. sidebar-rail: vuelve a ser el contenedor posicionado del toggle */
-  .sidebar-rail{
-    position:relative !important;
-  }
-
-  /* 2. Cards: altura fija uniforme (pisa height:auto !important previo) */
-  .product-card{
-    height:300px !important;
-    min-height:300px !important;
-  }
-
-  /* 3. Cabecera de columna: altura fija para alineación cross-column */
-  #searchView .market-column__head{
-    height:62px !important;
-    min-height:62px !important;
-    flex-shrink:0 !important;
-  }
-}
-
-/* =========================
-   V30 · Cards compactas + imágenes grandes
-   - Card: 240px (vs 300px original)
-   - Imagen: 155px SIN padding → imagen un 45% más grande en píxeles que antes
-     (antes: 132px contenedor - 25px padding = 107px visibles; ahora: 155px sin padding)
-   - Cuotas y envío ocultos para dar todo el espacio a imagen y datos clave
-========================= */
-@media (min-width:901px){
-
-  /* Card: 280px */
-  .product-card{
-    height:280px !important;
-    min-height:280px !important;
-  }
-
-  /* Imagen: ocupa 190px sin ningún padding → imagen más grande */
-  .product-card__media{
-    height:190px !important;
-  }
-  .product-card__media img{
-    padding:0 !important;
-  }
-
-  /* Body: 85px restantes, compacto */
-  .product-card__body{
-    gap:4px !important;
-    padding:6px 10px 5px !important;
-  }
-
-  /* Título: 2 líneas, fuente levemente menor */
-  .product-title{
-    min-height:0 !important;
-    font-size:11.5px !important;
-    -webkit-line-clamp:2 !important;
-  }
-
-  /* Precio: un poco menor para ganar espacio */
-  .product-price{
-    font-size:14px !important;
-  }
-
-  /* Cuotas y envío: ocultos en esta vista compacta */
-  .product-installments{
-    display:none !important;
-  }
-  .product-shipping{
-    display:none !important;
-  }
-
-  /* Meta row (rating, vendidos, categoría): sin padding extra */
-  .product-meta{
-    padding-top:0 !important;
-    margin-top:auto !important;
-  }
-
-  /* Vendidos badge */
-  .product-sold{
-    min-height:18px !important;
-    font-size:10px !important;
-  }
-}
-
-/* =========================
-   V31 · Header compacto
-   - Header: 64px (vs 92px base) → 28px más de espacio visible para cards
-   - Subtítulo del header oculto (eyebrow y título quedan)
-   - Ícono tool-mark reducido a 44px (era 76px)
-   - Logo Bidcom reducido a 148px (era 172px)
-   - Workspace height actualizado de 92px → 64px en todos los bloques
-========================= */
-@media (min-width:901px){
-  .app-header{
-    min-height:64px !important;
-  }
-  .app-header__inner{
-    min-height:64px !important;
-    gap:18px !important;
-  }
-  .header-subtitle{
-    display:none !important;
-  }
-  .tool-mark,
-  .tool-mark img{
-    width:44px !important;
-    height:44px !important;
-    min-width:44px !important;
-  }
-  .brand-logo{
-    width:148px !important;
-    min-width:148px !important;
-  }
-  .header-separator{
-    height:36px !important;
-  }
-  /* Workspace: recalculado con header de 64px en lugar de 92px */
-  .workspace{
-    height:calc(100dvh - 64px) !important;
-    max-height:calc(100dvh - 64px) !important;
-    min-height:calc(100dvh - 64px) !important;
-  }
-  /* Sidebar y rail: deben coincidir con nuevo alto del workspace */
-  .category-explorer{
-    height:calc(100dvh - 64px) !important;
-    max-height:calc(100dvh - 64px) !important;
-  }
-  .sidebar-rail{
-    height:calc(100dvh - 64px) !important;
-  }
-}
-
-/* =========================
-   V32 · Header ultra-compacto cuando hay búsqueda activa
-   - body.is-searched → header 42px (vs 64px normal)
-   - Tool-mark y eyebrow ocultos, logo y título reducidos
-   - Workspace recalculado a (100dvh - 42px)
-========================= */
-@media (min-width:901px){
-  body.is-searched .app-header{
-    min-height:42px !important;
-    transition:min-height .2s ease;
-  }
-  body.is-searched .app-header__inner{
-    min-height:42px !important;
-    gap:14px !important;
-  }
-  body.is-searched .tool-mark,
-  body.is-searched .tool-mark img{
-    display:none !important;
-  }
-  body.is-searched .header-separator{
-    height:22px !important;
-  }
-  body.is-searched .brand-logo{
-    width:108px !important;
-    min-width:108px !important;
-  }
-  body.is-searched .header-eyebrow{
-    display:none !important;
-  }
-  body.is-searched .header-title{
-    font-size:14px !important;
-    letter-spacing:-.03em !important;
-  }
-  body.is-searched .header-context{
-    padding:4px 10px !important;
-    font-size:11px !important;
-  }
-  body.is-searched .workspace{
-    height:calc(100dvh - 42px) !important;
-    max-height:calc(100dvh - 42px) !important;
-    min-height:calc(100dvh - 42px) !important;
-  }
-  body.is-searched .category-explorer{
-    height:calc(100dvh - 42px) !important;
-    max-height:calc(100dvh - 42px) !important;
-  }
-  body.is-searched .sidebar-rail{
-    height:calc(100dvh - 42px) !important;
-  }
-}
-
-/* =========================
-   V33 · Paleta Bidcom · Color Full Override
-   Azul Noche #00006F · Marino #000091 · Medio #0000D4
-   Eléctrico #0000FF · Vibrante #0051FF · Cian #00A1FF · Índigo #5300FF
-   Font: Montserrat
-========================= */
-
-/* Explorer title */
-.explorer-title{
-  color:#00006F !important;
-}
-
-/* Tree: fila seleccionada */
-.tree-row.is-selected{
-  background:linear-gradient(90deg,#eeeeff 0%,#f5f5ff 100%) !important;
-  box-shadow:inset 3px 0 0 #0000D4 !important;
-  color:#00006F !important;
-}
-.tree-row.is-open{
-  color:#000091 !important;
-}
-
-/* Dropdown: opción activa */
-.dropdown-option.is-active{
-  background:#eeeeff !important;
-  color:#00006F !important;
-  box-shadow:inset 3px 0 0 #0000D4 !important;
-}
-
-/* Sidebar toggle + top panel toggle */
-.sidebar-toggle{
-  color:#000091 !important;
-}
-.sidebar-toggle:hover{
-  color:#00006F !important;
-}
-.top-panel-toggle{
-  color:#000091 !important;
-}
-.top-panel-toggle:hover{
-  color:#00006F !important;
-}
-
-/* Checkbox accent */
-input[type="checkbox"]{
-  accent-color:#0000D4 !important;
-}
-
-/* Product rank badge principal → Cian */
-.product-rank:not(.is-secondary){
-  background:#00A1FF !important;
-  color:#ffffff !important;
-}
-.product-rank.is-secondary{
-  background:#000091 !important;
-  color:#ffffff !important;
-}
-
-/* Precio del producto */
-.product-price{
-  color:#00006F !important;
-}
-
-/* Count pill en column header */
-.market-count-pill{
-  color:#0000D4 !important;
-  border-color:#c8d0f0 !important;
-}
-
-/* Source option seleccionada */
-.source-option.is-checked span{
-  color:#00006F !important;
-}
-
-/* Status pills y elementos de tracking */
-.status-pill,
-.tracking-delay,
-.tracking-select,
-.tracking-filter select{
-  color:#000091 !important;
-}
-.tracking-filter select:focus,
-.category-picker:focus{
-  border-color:#0000D4 !important;
-  box-shadow:0 0 0 3px rgba(0,0,212,.10) !important;
-}
-
-/* Focus ring global */
-:focus-visible{
-  outline-color:#0051FF !important;
-}
-
-/* Start-search btn hover */
-.start-search-btn:not(:disabled):hover{
-  background:linear-gradient(90deg, #0000B3 0%, #0000D4 50%, #0051FF 100%) !important;
-}
-
-/* Sourcing btn hover */
-.sourcing-btn:not(:disabled):not(.is-started):hover{
-  background:linear-gradient(90deg, #000091 0%, #0000D4 100%) !important;
-}
-
-/* =========================
-   V34 · Results Head · Layout adaptativo
-   Panel expandido  → título a la izq, contexto oculto (se ve arriba)
-   Panel colapsado  → contexto a la izq, título a la der
-========================= */
-@media (min-width:901px){
-
-  /* --- Contenedor flex base --- */
-  .results-head{
-    display:flex !important;
-    align-items:center !important;
-    justify-content:flex-start !important;
-    gap:24px !important;
-    padding:10px 20px !important;
-    min-height:auto !important;
-  }
-
-  /* --- Grupo título + fuentes (siempre presente) --- */
-  .results-head-left{
-    display:flex;
-    flex-direction:column;
-    gap:1px;
-    flex-shrink:0;
-    order:0;
-  }
-  .results-head .results-eyebrow{
-    font-size:9px !important;
-    margin:0 0 2px !important;
-    color:#000091 !important;
-    letter-spacing:.12em !important;
-  }
-  .results-head .results-title{
-    font-size:14px !important;
-    margin:0 0 2px !important;
-    color:#00006F !important;
-    font-weight:900 !important;
-    letter-spacing:-.03em !important;
-  }
-  .results-head .results-meta{
-    font-size:11px !important;
-    margin:0 !important;
-    color:#000091 !important;
-  }
-
-  /* --- Contexto Branch + Categoría: oculto cuando panel visible --- */
-  .results-head .results-context-summary{
-    display:none !important;
-    margin:0 !important;
-    padding:0 !important;
-    border-bottom:none !important;
-    order:0;
-  }
-
-  /* --- Panel colapsado: contexto izq, título der --- */
-  body.top-panel-collapsed .results-head{
-    justify-content:space-between !important;
-  }
-  body.top-panel-collapsed .results-head .results-context-summary{
-    display:grid !important;
-    order:0 !important;
-  }
-  body.top-panel-collapsed .results-head .results-head-left{
-    order:1 !important;
-    align-items:flex-end !important;
-    text-align:right !important;
-  }
-
-  /* --- Tipografía del contexto (Bidcom) --- */
-  .results-context-value{
-    font-size:13px !important;
-    color:#00006F !important;
-    font-weight:900 !important;
-  }
-  .results-context-label{
-    color:#000091 !important;
-    font-size:9px !important;
-  }
-}
 </style>
 </head>
 <body>
@@ -3172,17 +2467,15 @@ input[type="checkbox"]{
                 <input type="checkbox" value="ML Brasil">
                 <span>ML Brasil</span>
               </label>
-              <label class="source-option">
-                <input type="checkbox" value="Amazon US">
-                <span>Amazon US</span>
+              <label class="source-option is-disabled">
+                <input type="checkbox" value="Amazon EU" disabled>
+                <span>Amazon EU</span>
+                <span class="option-status">Próximamente</span>
               </label>
-              <label class="source-option">
-                <input type="checkbox" value="Amazon MX">
-                <span>Amazon MX</span>
-              </label>
-              <label class="source-option">
-                <input type="checkbox" value="Amazon India">
+              <label class="source-option is-disabled">
+                <input type="checkbox" value="Amazon India" disabled>
                 <span>Amazon India</span>
+                <span class="option-status">Próximamente</span>
               </label>
               <label class="source-option is-disabled">
                 <input type="checkbox" value="Temu" disabled>
@@ -3211,11 +2504,6 @@ input[type="checkbox"]{
 
     <article class="results-card" aria-label="Productos encontrados por ecommerce">
       <div class="results-head">
-        <div class="results-head-left">
-          <p class="results-eyebrow">Resultados de búsqueda</p>
-          <h3 class="results-title">Top 20 por e-commerce</h3>
-          <div id="resultsMeta" class="results-meta">Seleccioná fuentes para buscar</div>
-        </div>
         <div id="resultsContextSummary" class="results-context-summary" aria-label="Resumen de búsqueda">
           <div class="results-context-block">
             <p class="results-context-label">Branch de Mercado Libre seleccionada</p>
@@ -3226,6 +2514,11 @@ input[type="checkbox"]{
             <p id="resultsContextBidcom" class="results-context-value">Nombre de la categoría Bidcom</p>
           </div>
         </div>
+        <div class="results-title-group">
+          <p class="results-eyebrow">Resultados de búsqueda</p>
+          <h3 class="results-title">Top 20 por e-commerce</h3>
+        </div>
+        <div id="resultsMeta" class="results-meta">Vista preliminar con datos mock locales</div>
       </div>
       <div class="results-scroll">
         <div id="marketResultsGrid" class="market-results-grid"></div>
@@ -3293,52 +2586,7 @@ input[type="checkbox"]{
 </main>
 
 <script>
-// ============ Integración con backend Scrapper Meli ============
-// URL del backend. Prioridad: ?api=... > localStorage('apiBase') > automatico.
-// Automatico: si el HTML se sirve por http(s) (ej. desde el tunel Cloudflare),
-// usa el MISMO origen (relativo). Si se abre como archivo local, usa 127.0.0.1:8000.
-const API_BASE = (
-  new URLSearchParams(location.search).get('api') ||
-  localStorage.getItem('apiBase') ||
-  (location.protocol === 'file:' ? 'http://127.0.0.1:8000' : '')
-).replace(/\/+$/, '');
-// Header inofensivo: evita la página de aviso de algunos túneles (ngrok) que rompe el JSON.
-const API_HEADERS = { 'ngrok-skip-browser-warning': '1' };
-function apiFetch(path) { return fetch(API_BASE + path, { headers: API_HEADERS }); }
-
-// Fuente (label del checkbox) -> código de país que entiende el backend.
-const SOURCE_TO_COUNTRY = {
-  'ML Argentina': 'AR', 'ML México': 'MX', 'ML Uruguay': 'UY', 'ML Brasil': 'BR'
-};
-// Fuentes de Amazon -> site del backend (buscan el NOMBRE de la categoría).
-const AMAZON_SITE = { 'Amazon US': 'US', 'Amazon MX': 'MX', 'Amazon India': 'IN' };
-// Vertical del catálogo -> ícono del árbol (los íconos ya están definidos en icon()).
-const VERTICAL_ICON = {
-  'Automotive':'car', 'Beauty':'sparkle', 'Consumer Electronics':'device',
-  'Home & Industry':'home', 'Sports & Health':'pulse', 'Toys and Babies':'toy', 'Otras':'grid'
-};
-
-// Carga el árbol REAL de categorías (con IDs MLA) desde el backend.
-// Si el backend no responde, deja los datos locales de respaldo de abajo.
-async function loadCategoryTree() {
-  try {
-    const r = await apiFetch('/arbol?pais=AR');
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    const data = await r.json();
-    if (Array.isArray(data) && data.length) {
-      data.forEach(n => { if (n.level === 'Vertical') n.icon = VERTICAL_ICON[n.name] || 'grid'; });
-      CATEGORY_DATA = data;
-    }
-  } catch (e) {
-    console.warn('No se pudo cargar el árbol desde el backend (' + API_BASE + '). Uso datos locales de respaldo.', e);
-  } finally {
-    renderTree();
-    renderSelection();
-  }
-}
-
-// Datos locales de respaldo (se reemplazan por el árbol real del backend al cargar).
-let CATEGORY_DATA = [
+const CATEGORY_DATA = [
   {
     id: 'automotive', name: 'Automotive', level: 'Vertical', icon: 'car', children: [
       { id:'auto-acc-vehiculos', name:'Accesorios para Vehículos', level:'L1', children:[
@@ -3614,13 +2862,10 @@ function renderSelection() {
   }
 
   const selected = state.selectedPath[state.selectedPath.length - 1];
-  // "Categoría resumida Bidcom" = la vertical (agrupación Bidcom) de la rama elegida.
-  const vertical = state.selectedPath[0];
-  const resumen = (vertical && vertical.name) || selected.name;
   selectionBranch.textContent = selected.name;
-  selectionBidcom.textContent = resumen;
+  selectionBidcom.textContent = selected.bidcomCategory || 'Nombre de la categoría Bidcom';
   if (resultsContextBranch) resultsContextBranch.textContent = selected.name;
-  if (resultsContextBidcom) resultsContextBidcom.textContent = resumen;
+  if (resultsContextBidcom) resultsContextBidcom.textContent = selected.bidcomCategory || 'Nombre de la categoría Bidcom';
 
   breadcrumbEl.innerHTML = state.selectedPath.map((item, index) => `
     <span class="crumb ${index === state.selectedPath.length - 1 ? 'is-last' : ''}">${escapeHtml(item.name)}</span>
@@ -3654,10 +2899,7 @@ const MARKET_INFO = {
   'ML Argentina': { brand:'Mercado Libre', country:'Argentina', flag:'🇦🇷', currency:'$', accent:'ml' },
   'ML México': { brand:'Mercado Libre', country:'México', flag:'🇲🇽', currency:'$ MXN', accent:'ml' },
   'ML Uruguay': { brand:'Mercado Libre', country:'Uruguay', flag:'🇺🇾', currency:'$ UYU', accent:'ml' },
-  'ML Brasil': { brand:'Mercado Libre', country:'Brasil', flag:'🇧🇷', currency:'R$', accent:'ml' },
-  'Amazon US': { brand:'Amazon', country:'Estados Unidos', flag:'🇺🇸', currency:'US$', accent:'amz' },
-  'Amazon MX': { brand:'Amazon', country:'México', flag:'🇲🇽', currency:'$', accent:'amz' },
-  'Amazon India': { brand:'Amazon', country:'India', flag:'🇮🇳', currency:'₹ INR', accent:'amz' }
+  'ML Brasil': { brand:'Mercado Libre', country:'Brasil', flag:'🇧🇷', currency:'R$', accent:'ml' }
 };
 
 const BASE_PRODUCTS = [
@@ -3673,10 +2915,7 @@ const BASE_PRODUCTS = [
   { title:'Aspiradora Powerclean LV30 3 en 1 Polvo Líquidos y Lavatapizados 30L', type:'industrial2', discount:'7% OFF', price:'345.549', oldPrice:'374.986', installments:'9 cuotas de $38.394', shipping:'Envío gratis por ser tu primera compra', rating:'4.8', sold:'+1000 vendidos', seller:'Powerclean' }
 ];
 
-function marketLogo(source) {
-  if (source && source.indexOf('Amazon') === 0) {
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 64"><text x="2" y="34" font-family="Arial,Helvetica,sans-serif" font-size="30" font-weight="700" fill="#131A22">amazon</text><path d="M16 46c22 13 70 13 104 1 3-1 5 1 2 3-16 11-58 13-86 3-4-1-2-4-1-5z" fill="#FF9900"/><path d="M122 47c1-3 0-7-2-8 6 0 8 3 6 9-1 1-3 0-4-1z" fill="#FF9900"/></svg>`;
-  }
+function marketLogo() {
   return `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 150 104"><path fill="#2D3277" d="M150 49.027c0-26.944-33.685-48.87-75-48.87-41.501 0-75 21.926-75 48.87v2.787c0 28.616 29.404 51.843 75 51.843 45.968 0 75-23.227 75-51.843v-2.787Z"/><path fill="#FFE600" d="M147.022 49.027c0 25.457-32.196 46.083-72.022 46.083-39.826 0-72.022-20.626-72.022-46.083C2.978 23.57 35.174 2.944 75 2.944c39.826.186 72.022 20.626 72.022 46.083Z"/><path fill="#FFF" d="M50.993 34.533s-.745.743-.373 1.487c1.117 1.486 4.653 2.23 8.189 1.486 2.047-.557 4.839-2.601 7.444-4.645 2.792-2.23 5.583-4.46 8.56-5.389 2.979-.93 4.84-.558 6.142-.186 1.49.372 2.978 1.3 5.584 3.345 5.024 3.716 24.751 20.997 28.101 23.97 2.792-1.3 15.075-6.503 31.638-10.22-1.117-8.919-6.514-17.095-14.702-23.784-11.353 4.831-25.31 7.247-39.082.557 0 0-7.444-3.53-14.702-3.345-10.794.186-15.447 5.017-20.472 9.849l-6.327 6.875Z"/><path fill="#FFF" d="M114.082 56.274c-.186-.186-23.263-20.44-28.474-24.342-2.978-2.23-4.653-2.788-6.514-3.16-.93-.185-2.233 0-3.163.372-2.42.744-5.584 2.788-8.375 5.017-2.978 2.416-5.77 4.46-8.189 5.017-3.163.93-7.258 0-9.119-1.114-.744-.558-1.303-1.115-1.489-1.673-.744-1.486.559-2.787.745-2.973l6.327-6.875 2.233-2.23c-2.047.186-3.908.743-5.769 1.3-2.233.558-4.466 1.302-6.7 1.302-.93 0-5.955-.744-6.885-1.115-5.77-1.487-10.794-3.16-18.425-6.69C11.166 25.8 5.211 34.161 3.536 43.452c1.303.372 3.35.93 4.28 1.115 20.472 4.46 26.8 9.291 28.102 10.22 1.303-1.3 2.978-2.23 5.025-2.23 2.233 0 4.28 1.115 5.583 2.974 1.117-.93 2.792-1.673 4.839-1.673.93 0 1.86.186 2.977.558a6.83 6.83 0 0 1 4.095 3.716c.744-.372 1.675-.557 2.791-.557 1.117 0 2.233.185 3.35.743 3.722 1.672 4.28 5.389 4.094 8.176h.745c4.466 0 8.189 3.716 8.189 8.176 0 1.3-.373 2.601-.931 3.902 1.303.743 4.28 2.23 7.072 1.858 2.233-.186 2.978-.929 3.35-1.486.186-.372.372-.558.186-.93l-5.77-6.503s-.93-.93-.558-1.3c.373-.372.93.185 1.303.557 2.978 2.415 6.514 6.132 6.514 6.132s.372.557 1.675.743c1.116.186 3.163 0 4.652-1.115.373-.372.745-.743.93-1.115 1.49-1.858-.185-3.716-.185-3.716l-6.7-7.619s-.93-.929-.558-1.3c.372-.372.93.185 1.302.557a253.206 253.206 0 0 1 8.003 7.619c.558.371 3.164 2.044 6.513-.186 2.048-1.301 2.42-2.973 2.42-4.274-.186-1.672-1.489-2.787-1.489-2.787l-9.305-9.291s-.93-.744-.558-1.301c.372-.372.93.186 1.302.557 2.978 2.416 10.98 9.663 10.98 9.663.186 0 2.792 2.044 6.328-.186 1.303-.743 2.047-1.858 2.047-3.345-.372-2.044-2.047-3.53-2.047-3.53Z"/><path fill="#FFF" d="M69.417 67.98c-1.489 0-2.978.744-3.164.744-.186 0 0-.558.186-.93.186-.371 2.047-5.946-2.605-7.99-3.536-1.486-5.583.186-6.328.93-.186.185-.372.185-.372 0 0-.93-.558-3.717-3.536-4.646-4.28-1.3-7.072 1.672-7.816 2.787-.373-2.415-2.42-4.46-5.025-4.46a5 5 0 0 0-5.025 5.018 5 5 0 0 0 5.025 5.017c1.303 0 2.605-.558 3.536-1.487v.186c-.186 1.3-.559 5.76 4.094 7.619 1.861.743 3.536.186 4.839-.744.372-.371.372-.185.372.186-.186 1.115 0 3.717 3.536 5.017 2.605 1.115 4.28 0 5.21-.929.373-.371.56-.371.56.372.185 3.345 2.977 5.946 6.327 5.946 3.536 0 6.327-2.787 6.327-6.318.186-3.344-2.605-6.132-6.141-6.318Z"/><path fill="#2D3277" d="M115.012 53.858c-7.072-6.132-23.635-20.44-27.915-23.785-2.606-1.858-4.28-2.973-5.77-3.344-.744-.186-1.674-.372-2.791-.372s-2.42.186-3.536.558c-2.792.929-5.77 3.158-8.56 5.388l-.187.186c-2.605 2.044-5.21 4.088-7.258 4.646-.93.185-1.861.371-2.605.371-2.234 0-4.28-.743-5.025-1.672-.186-.186 0-.372.186-.744l6.141-7.06c4.839-4.832 9.492-9.477 20.1-9.663h.558c6.7 0 13.213 2.973 13.958 3.345 6.327 2.973 12.655 4.46 19.168 4.46 6.7 0 13.586-1.673 21.03-5.018-.744-.743-1.675-1.3-2.605-2.044-6.328 2.787-12.469 4.088-18.425 4.088-5.955 0-12.096-1.486-17.866-4.274-.372-.186-7.63-3.53-15.26-3.53h-.558c-8.933.186-13.958 3.344-17.308 6.132-3.35 0-6.142.929-8.747 1.672-2.233.558-4.28 1.115-6.142 1.115h-2.233c-2.233 0-13.213-2.787-21.96-6.132-.93.557-1.675 1.3-2.605 2.044 9.119 3.716 20.285 6.69 23.82 6.875.931 0 2.048.186 2.979.186 2.233 0 4.652-.557 6.885-1.3 1.303-.372 2.792-.744 4.28-1.116l-1.302 1.301-6.328 6.876c-.558.557-1.674 1.858-.93 3.53.372.743.93 1.3 1.675 1.858 1.489.93 4.28 1.673 6.7 1.673.93 0 1.86 0 2.605-.372 2.606-.557 5.397-2.787 8.375-5.203 2.42-1.858 5.77-4.274 8.188-5.017.745-.186 1.675-.372 2.234-.372h.558c1.675.186 3.35.744 6.328 2.973 5.21 3.903 28.287 24.157 28.473 24.343 0 0 1.489 1.3 1.303 3.344 0 1.115-.744 2.23-1.861 2.974-.93.557-2.047.929-2.978.929-1.488 0-2.605-.744-2.605-.744s-8.002-7.247-10.98-9.662c-.372-.372-.93-.744-1.303-.744-.186 0-.372.186-.558.372-.372.557 0 1.3.744 1.858l9.305 9.291s1.117 1.115 1.303 2.416c0 1.486-.744 2.787-2.233 3.902-1.117.743-2.233 1.115-3.35 1.115-1.489 0-2.42-.557-2.605-.743l-1.303-1.301c-2.42-2.416-4.839-4.831-6.7-6.318-.372-.371-.93-.743-1.303-.743-.186 0-.372 0-.558.186-.186.186-.372.743.186 1.3a2.3 2.3 0 0 0 .372.558l6.7 7.618s1.303 1.673.186 3.16l-.186.37-.558.558c-1.117.93-2.606 1.115-3.35 1.115h-.93c-.745-.186-1.117-.371-1.303-.557-.373-.372-3.722-3.902-6.514-6.132-.372-.372-.744-.743-1.303-.743-.186 0-.372 0-.558.185-.558.558.372 1.487.558 1.859l5.77 6.317s0 .186-.186.372c-.187.372-.931.93-2.978 1.3h-.745c-2.233 0-4.466-1.114-5.583-1.672.559-1.115.745-2.415.745-3.716 0-4.645-3.908-8.548-8.561-8.548h-.372c.186-2.23-.186-6.317-4.28-7.99-1.117-.557-2.42-.743-3.537-.743-.93 0-1.86.186-2.605.557-.93-1.672-2.233-2.973-4.28-3.53-1.117-.372-2.048-.558-3.164-.558-1.675 0-3.35.558-4.839 1.487-1.303-1.672-3.536-2.787-5.583-2.787-1.861 0-3.722.743-5.211 2.044-1.861-1.301-8.933-5.947-27.916-10.22-.93-.186-2.977-.744-4.28-1.115-.186 1.115-.372 2.044-.558 3.159 0 0 3.536.929 4.28.929 19.355 4.274 25.868 8.733 26.985 9.662a7.446 7.446 0 0 0-.558 2.787c0 4.089 3.35 7.247 7.258 7.247.372 0 .93 0 1.303-.185.558 2.973 2.605 5.203 5.397 6.317.93.372 1.675.558 2.605.558.558 0 1.117 0 1.675-.186.558 1.3 1.861 3.159 4.466 4.274a7.472 7.472 0 0 0 2.792.557c.745 0 1.489-.185 2.233-.371 1.303 3.159 4.467 5.389 8.003 5.389 2.233 0 4.466-.93 6.141-2.602 1.303.743 4.28 2.23 7.258 2.23h1.117c2.978-.372 4.28-1.487 4.839-2.416.186-.186.186-.371.372-.557.744.186 1.489.371 2.233.371 1.675 0 3.164-.557 4.653-1.672 1.489-1.115 2.605-2.601 2.791-4.088.559.186 1.117.186 1.489.186 1.675 0 3.35-.558 4.839-1.487 2.977-2.044 3.536-4.46 3.536-6.132.558.186 1.116.186 1.675.186 1.489 0 2.977-.557 4.466-1.3a6.49 6.49 0 0 0 3.164-5.018c.186-1.486-.186-2.787-.931-4.088 5.025-2.23 16.378-6.318 29.963-9.29 0-1.116-.186-2.045-.372-3.16-16.191 2.974-28.288 8.176-31.452 9.477ZM69.417 80.244c-3.164 0-5.77-2.415-5.956-5.574 0-.186 0-.93-.558-.93-.186 0-.372.187-.744.372-.745.558-1.675 1.301-2.792 1.301-.558 0-1.302-.186-1.86-.371-3.35-1.301-3.35-3.717-3.165-4.646 0-.186 0-.557-.186-.743l-.186-.186h-.186c-.186 0-.372 0-.558.186-1.117.743-2.047 1.115-2.978 1.115-.558 0-1.116-.186-1.675-.372-4.466-1.672-4.094-5.946-3.908-7.061 0-.186 0-.372-.186-.557l-.372-.186-.373.371c-.93.744-2.047 1.301-3.163 1.301-2.606 0-4.653-2.044-4.653-4.645 0-2.602 2.047-4.646 4.653-4.646 2.233 0 4.28 1.672 4.466 3.902l.186 1.301.745-1.115c0-.186 1.86-2.973 5.397-2.973.558 0 1.302.186 2.047.372 2.791.743 3.164 3.344 3.164 4.273 0 .558.558.558.558.558.186 0 .372-.186.558-.186.559-.557 1.675-1.486 3.35-1.486.745 0 1.675.185 2.606.557 4.28 1.858 2.419 7.247 2.419 7.433-.372.929-.372 1.3 0 1.486h.372c.186 0 .372 0 .745-.186.558-.185 1.489-.557 2.233-.557 3.164 0 5.955 2.602 5.955 5.946 0 3.345-2.605 5.946-5.955 5.946Z"/></svg>`;
 }
 
@@ -3733,19 +2972,14 @@ function formatNumber(num, source) {
 }
 
 function productCard(product) {
-  // Si el producto trae link (p. ej. Amazon), la imagen y el título abren la
-  // publicación original en una pestaña nueva.
-  const link = product.link || '';
-  const openA = link ? `<a class="product-link" href="${escapeAttr(link)}" target="_blank" rel="noopener noreferrer" title="Ver publicación">` : '';
-  const closeA = link ? '</a>' : '';
   return `<article class="product-card">
     <div class="product-card__media">
       <span class="product-rank ${product.rank > 3 ? 'is-secondary' : ''}">${product.rank <= 3 ? '🏆 ' : ''}#${product.rank}</span>
       ${product.discount ? `<span class="product-discount">${escapeHtml(product.discount)}</span>` : ''}
-      ${openA}<img src="${product.image}" alt="${escapeHtml(product.title)}" loading="lazy">${closeA}
+      <img src="${product.image}" alt="${escapeHtml(product.title)}" loading="lazy">
     </div>
     <div class="product-card__body">
-      <h4 class="product-title">${openA}${escapeHtml(product.title)}${closeA}</h4>
+      <h4 class="product-title">${escapeHtml(product.title)}</h4>
       <div class="product-prices">
         <strong class="product-price">${escapeHtml(product.currency)} ${escapeHtml(product.price)}</strong>
         ${product.oldPrice ? `<span class="product-old-price">${escapeHtml(product.currency)} ${escapeHtml(product.oldPrice)}</span>` : ''}
@@ -3782,56 +3016,7 @@ function productCard(product) {
   </article>`;
 }
 
-// Convierte un producto del backend al objeto que espera productCard().
-function backendToCard(p, source, index) {
-  const info = MARKET_INFO[source] || MARKET_INFO['ML Argentina'];
-  return {
-    rank: p.ranking || (index + 1),
-    title: p.titulo || '',
-    price: p.precio || '',
-    oldPrice: p.precio_original || '',
-    currency: p.moneda || info.currency || '$',
-    discount: p.descuento || '',
-    installments: p.cuotas || '',
-    shipping: p.envio || '',
-    rating: p.rating || '',
-    sold: p.vendidos || '',
-    seller: p.vendedor || '',
-    image: p.imagen || '',
-    link: p.link || '',
-    source,
-    sourceBrand: info.brand,
-    sourceCountry: info.country
-  };
-}
-
-function columnMessage(text, isError) {
-  const color = isError ? '#dc2626' : '#64748b';
-  return `<div style="padding:28px 16px;text-align:center;color:${color};font-size:13px;line-height:1.5;">${escapeHtml(text)}</div>`;
-}
-
-function fillColumnProducts(col, data, source) {
-  if (!col) return;
-  const list = col.querySelector('.market-column__list');
-  const pill = col.querySelector('.market-count-pill');
-  const productos = data.productos || [];
-  if (pill) pill.textContent = productos.length;
-  if (!list) return;
-  if (!productos.length) { list.innerHTML = columnMessage('Sin productos disponibles'); return; }
-  list.innerHTML = productos.map((p, i) => productCard(backendToCard(p, source, i))).join('');
-}
-
-function fillColumnMessage(col, msg, isError) {
-  if (!col) return;
-  const list = col.querySelector('.market-column__list');
-  const pill = col.querySelector('.market-count-pill');
-  if (pill) pill.textContent = '0';
-  if (list) list.innerHTML = columnMessage(msg, isError);
-}
-
-let renderToken = 0;
 function renderResults() {
-  document.body.classList.toggle('is-searched', Boolean(state.hasSearched));
   const grid = document.getElementById('marketResultsGrid');
   const meta = document.getElementById('resultsMeta');
   const resultsCard = document.querySelector('.results-card');
@@ -3853,85 +3038,26 @@ function renderResults() {
     if (meta) meta.textContent = 'Sin fuentes seleccionadas';
     return;
   }
-
-  const node = state.selectedPath[state.selectedPath.length - 1];
-  const refId = node && /^ML[ABMU]\d+$/.test(node.id) ? node.id : null;
-  if (!refId) {
-    grid.innerHTML = '';
-    if (meta) meta.textContent = 'Elegí una categoría (L1, L2 o L3) en el árbol';
-    return;
-  }
-
-  const sufijo = selectedSources.length > 1 ? 's' : '';
-  if (meta) meta.textContent = `${selectedSources.length} fuente${sufijo} · buscando…`;
-
-  const token = ++renderToken;
-  // 1) Pinto las columnas con estado "cargando".
+  if (meta) meta.textContent = `${selectedSources.length} fuente${selectedSources.length > 1 ? 's' : ''}`;
   grid.innerHTML = selectedSources.map(source => {
     const info = MARKET_INFO[source] || MARKET_INFO['ML Argentina'];
-    return `<section class="market-column" data-source="${escapeAttr(source)}">
+    const products = Array.from({length:20}, (_, i) => localizedProduct(BASE_PRODUCTS[i % BASE_PRODUCTS.length], source, i));
+    return `<section class="market-column">
       <div class="market-column__head">
         <div class="market-column__brand">
-          <span class="market-logo-mini">${marketLogo(source)}</span>
+          <span class="market-logo-mini">${marketLogo()}</span>
           <span>
             <span class="market-name">${escapeHtml(info.brand)}</span>
             <span class="market-country"><span class="market-flag" aria-hidden="true">${escapeHtml(info.flag || '')}</span>${escapeHtml(info.country)}</span>
           </span>
         </div>
-        <span class="market-count-pill">…</span>
+        <span class="market-count-pill">20</span>
       </div>
-      <div class="market-column__list">${columnMessage('Buscando más vendidos…')}</div>
+      <div class="market-column__list">
+        ${products.map(productCard).join('')}
+      </div>
     </section>`;
   }).join('');
-
-  // 2) Traigo los productos de cada fuente en paralelo y voy llenando su columna.
-  let pendientes = selectedSources.length;
-  const finalizarMeta = () => {
-    if (token !== renderToken) return;
-    if (--pendientes <= 0 && meta) meta.textContent = `${selectedSources.length} fuente${sufijo}`;
-  };
-
-  const catName = (node && node.name) ? node.name : '';
-
-  selectedSources.forEach(source => {
-    const col = grid.querySelector(`.market-column[data-source="${source}"]`);
-    const amazonSite = AMAZON_SITE[source];   // 'US' | 'MX' si es Amazon
-    const code = SOURCE_TO_COUNTRY[source];    // 'AR'/'MX'/'UY'/'BR' si es MercadoLibre
-
-    let url;
-    if (amazonSite) {
-      // Amazon: busca el NOMBRE de la categoría y ordena por más vendidos.
-      if (!catName) { fillColumnMessage(col, 'Elegí una categoría'); finalizarMeta(); return; }
-      url = `/amazon?q=${encodeURIComponent(catName)}&site=${amazonSite}`;
-    } else if (code) {
-      url = `/mas-vendidos-pais?ref=${encodeURIComponent(refId)}&pais=${code}`;
-    } else {
-      fillColumnMessage(col, 'Fuente no soportada todavía'); finalizarMeta(); return;
-    }
-
-    apiFetch(url)
-      .then(async (r) => {
-        const data = await r.json().catch(() => ({}));
-        if (token !== renderToken) return;
-        if (!r.ok) {
-          const marca = amazonSite ? 'Amazon' : 'MercadoLibre';
-          const msg = r.status === 503
-            ? `${marca} bloqueó la consulta. Probá de nuevo en unos segundos.`
-            : (data.detail || `Error ${r.status}`);
-          fillColumnMessage(col, msg, true);
-        } else if (data.encontrado === false) {
-          fillColumnMessage(col, data.mensaje || 'Sin resultados para esta categoría');
-        } else {
-          fillColumnProducts(col, data, source);
-        }
-        finalizarMeta();
-      })
-      .catch(() => {
-        if (token !== renderToken) return;
-        fillColumnMessage(col, `No se pudo conectar al backend (${API_BASE})`, true);
-        finalizarMeta();
-      });
-  });
 }
 
 
@@ -4162,8 +3288,8 @@ function renderTracking() {
 
 updateSourceSummary();
 
-// Carga el árbol real desde el backend (y, dentro, llama a renderTree + renderSelection).
-loadCategoryTree();
+renderTree();
+renderSelection();
 
 
 document.addEventListener('change', (event) => {
@@ -4261,3 +3387,191 @@ setInterval(() => { if (state.sentProducts.some(item => item.response === 'pendi
 </script>
 </body>
 </html>
+<!-- =========================
+     V25 · Compactación del header de resultados
+     - Reduce el alto del contenedor de título de productos.
+     - En modo normal: título + metadata quedan en línea horizontal.
+     - En modo panel superior oculto: Branch / Categoría Bidcom y título de resultados conviven en el mismo header.
+========================= -->
+<style>
+/* Base compacta del header de resultados */
+.results-head{
+  min-height:44px !important;
+  padding:9px 16px 8px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:16px !important;
+  background:linear-gradient(180deg,#ffffff 0%,#fbfdff 100%) !important;
+  border-bottom:1px solid #e5edf7 !important;
+}
+
+.results-title-group{
+  min-width:0 !important;
+  display:flex !important;
+  align-items:baseline !important;
+  gap:10px !important;
+}
+
+.results-eyebrow{
+  margin:0 !important;
+  font-size:10px !important;
+  line-height:1 !important;
+  font-weight:900 !important;
+  letter-spacing:.12em !important;
+  text-transform:uppercase !important;
+  color:#7d8a9e !important;
+  white-space:nowrap !important;
+}
+
+.results-title{
+  margin:0 !important;
+  font-size:18px !important;
+  line-height:1 !important;
+  font-weight:900 !important;
+  letter-spacing:-.035em !important;
+  color:#102033 !important;
+  white-space:nowrap !important;
+}
+
+.results-meta{
+  margin:0 !important;
+  color:#617089 !important;
+  font-size:11px !important;
+  font-weight:900 !important;
+  white-space:nowrap !important;
+}
+
+/* El resumen compacto sigue oculto mientras el panel superior está visible */
+.results-context-summary{
+  display:none !important;
+}
+
+/* Panel superior oculto: contexto + título en el mismo contenedor */
+body.top-panel-collapsed .results-head{
+  min-height:62px !important;
+  padding:10px 16px !important;
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) auto !important;
+  align-items:center !important;
+  column-gap:20px !important;
+}
+
+body.top-panel-collapsed .results-context-summary{
+  display:grid !important;
+  grid-template-columns:minmax(220px,1fr) minmax(220px,1fr) !important;
+  gap:16px !important;
+  align-items:center !important;
+  margin:0 !important;
+  padding:0 !important;
+  border-bottom:0 !important;
+  min-width:0 !important;
+}
+
+body.top-panel-collapsed .results-context-block{
+  min-width:0 !important;
+}
+
+body.top-panel-collapsed .results-context-block + .results-context-block{
+  padding-left:16px !important;
+  border-left:1px solid #e4ebf5 !important;
+  padding-top:0 !important;
+  border-top:0 !important;
+}
+
+body.top-panel-collapsed .results-context-label{
+  margin:0 0 5px !important;
+  font-size:10px !important;
+  line-height:1 !important;
+  font-weight:900 !important;
+  letter-spacing:.10em !important;
+  text-transform:uppercase !important;
+  color:#7d8a9e !important;
+  white-space:nowrap !important;
+}
+
+body.top-panel-collapsed .results-context-value{
+  margin:0 !important;
+  font-size:17px !important;
+  line-height:1.05 !important;
+  font-weight:900 !important;
+  letter-spacing:-.035em !important;
+  color:#102033 !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+
+body.top-panel-collapsed .results-title-group{
+  justify-self:end !important;
+  display:grid !important;
+  gap:4px !important;
+  text-align:right !important;
+  min-width:max-content !important;
+}
+
+body.top-panel-collapsed .results-title-group .results-eyebrow{
+  margin:0 !important;
+}
+
+body.top-panel-collapsed .results-title{
+  font-size:17px !important;
+}
+
+body.top-panel-collapsed .results-meta{
+  justify-self:end !important;
+  grid-column:2 !important;
+  margin-top:-2px !important;
+  font-size:11px !important;
+  text-align:right !important;
+}
+
+/* Un poco más de aire para las cabeceras de ecommerce sin agrandar el bloque de título */
+.results-scroll{
+  padding-top:0 !important;
+}
+
+/* Responsive: conservar legibilidad sin bloquear scroll */
+@media(max-width:900px){
+  .results-head,
+  body.top-panel-collapsed .results-head{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    gap:8px !important;
+    padding:12px !important;
+  }
+
+  .results-title-group,
+  body.top-panel-collapsed .results-title-group{
+    display:grid !important;
+    gap:4px !important;
+    justify-self:start !important;
+    text-align:left !important;
+    min-width:0 !important;
+  }
+
+  .results-title,
+  body.top-panel-collapsed .results-title{
+    white-space:normal !important;
+  }
+
+  .results-meta,
+  body.top-panel-collapsed .results-meta{
+    justify-self:start !important;
+    grid-column:auto !important;
+    text-align:left !important;
+  }
+
+  body.top-panel-collapsed .results-context-summary{
+    grid-template-columns:1fr !important;
+    gap:8px !important;
+  }
+
+  body.top-panel-collapsed .results-context-block + .results-context-block{
+    padding-left:0 !important;
+    border-left:0 !important;
+    padding-top:8px !important;
+    border-top:1px solid #e4ebf5 !important;
+  }
+}
+</style>
