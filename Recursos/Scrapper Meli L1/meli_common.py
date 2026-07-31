@@ -9,11 +9,17 @@ import csv
 import json
 import os
 import re
+import sys
 from datetime import datetime
 
 from bs4 import BeautifulSoup
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# Al correr como .exe (PyInstaller), los archivos de datos van empaquetados en
+# sys._MEIPASS; sin empaquetar, junto a este .py.
+if getattr(sys, "frozen", False):
+    BASE_DIR = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(sys.executable)))
+else:
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CSV_FILE = os.path.join(BASE_DIR, "NN AI - Verticales MELI.csv")
 OUT_JSON = os.path.join(BASE_DIR, "resultados_l1.json")
 OUT_XLSX = os.path.join(BASE_DIR, "resultados_l1.xlsx")

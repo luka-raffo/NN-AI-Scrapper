@@ -7,6 +7,10 @@ openpyxl>=3.1
 fastapi>=0.110
 uvicorn>=0.27
 
-# Fallback con navegador real (opcional; solo para scraper_browser.py)
+# Motor con navegador anti-deteccion (meli_browser.py): MELI cambio su muro
+# anti-bot y ya no se pasa con curl; el backend scrapea el listado con esto.
+undetected-chromedriver>=3.5
 selenium>=4.20
+
+# Fallback con navegador real (opcional; solo para scraper_browser.py)
 selenium-stealth>=1.0.6

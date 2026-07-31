@@ -35,6 +35,7 @@ import csv
 import json
 import os
 import re
+import sys
 import threading
 import time
 import unicodedata
@@ -46,13 +47,18 @@ from pydantic import BaseModel
 
 import meli_common as mc
 import meli_fetch as mf
+import meli_browser as mb
 import amazon_fetch as af
 
 CACHE_TTL_S = 600          # 10 min: respuestas cacheadas para no re-scrapear de mas
 CAT_ID_RE = re.compile(r"^ML[ABMU]\d+$")  # A=Argentina B=Brasil M=Mexico U=Uruguay
 
-# HTML de la web (esta una carpeta arriba, en Recursos/).
-HTML_FILE = os.path.normpath(os.path.join(mc.BASE_DIR, "..", "htmlMvpNuevosNegociosAI.html"))
+# HTML de la web. Sin empaquetar esta una carpeta arriba (en Recursos/); como
+# .exe (PyInstaller) va empaquetado junto a los demas datos, en mc.BASE_DIR.
+if getattr(sys, "frozen", False):
+    HTML_FILE = os.path.join(mc.BASE_DIR, "htmlMvpNuevosNegociosAI.html")
+else:
+    HTML_FILE = os.path.normpath(os.path.join(mc.BASE_DIR, "..", "htmlMvpNuevosNegociosAI.html"))
 
 # Prefijo de ID por pais (inverso de mc.PAIS_DE_PREFIJO).
 PREFIJO_DE_PAIS = {v: k for k, v in mc.PAIS_DE_PREFIJO.items()}  # AR->MLA, MX->MLM, ...
@@ -344,12 +350,12 @@ def _resolver(cat_id: str, nocache: bool):
                 payload["cacheado"] = True
                 return payload
 
-        # Reintentos cortos: una API no debe colgar 80s. Si bloquea, 503 rapido.
-        estado, productos = mf.scrapear_categoria(
-            cat_id, max_retries=2, backoff_base=4, backoff_max=6)
+        # Navegador anti-deteccion (undetected-chromedriver): MELI ya no se pasa
+        # con curl, exige un navegador real. Ver meli_browser.py.
+        estado, productos = mb.scrapear_categoria(cat_id)
         if estado == "bloqueado":
             raise HTTPException(status_code=503,
-                                detail="MercadoLibre bloqueo la peticion (DataDome). "
+                                detail="MercadoLibre bloqueo la peticion. "
                                        "Reintenta en unos segundos.")
 
         payload = {
@@ -526,3 +532,17 @@ def mas_vendidos(cat_id: str, nocache: int = Query(0)):
 @app.post("/mas-vendidos")
 def mas_vendidos_post(body: CategoriaIn):
     return _resolver(body.categoria, nocache=False)
+
+
+@app.on_event("startup")
+def _precalentar_navegador():
+    # Arranca el Chrome persistente y pre-visita las homes de los 4 paises en un
+    # hilo aparte, para que la primera consulta de cada pais no llegue en frio
+    # (evita el muro inicial y su reintento). No bloquea el arranque del server.
+    threading.Thread(target=mb.precalentar_paises, daemon=True).start()
+
+
+@app.on_event("shutdown")
+def _cerrar_navegador():
+    # Cierra el Chrome persistente del motor con navegador.
+    mb.cerrar()
