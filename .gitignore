@@ -39,3 +39,9 @@ LINK DE LA APP.txt
 Thumbs.db
 .DS_Store
 desktop.ini
+
+# ===== Builds de PyInstaller y entornos de macOS =====
+build/
+dist/
+.venv-mac/
+.venv-build/

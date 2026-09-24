@@ -33,8 +33,16 @@ def _base_dir():
 
 def _preparar_salida():
     """En modo windowed, sys.stdout/err son None; muchas libs (uvicorn) fallan al
-    escribir. Redirige todo a app.log junto al .exe."""
-    log = os.path.join(_base_dir(), "app.log")
+    escribir. Redirige todo a app.log junto al .exe.
+
+    En macOS el .app puede correr desde una ubicacion de solo lectura (Gatekeeper
+    lo "traslada" si se abre desde Descargas): el log va a ~/Library/Logs."""
+    if sys.platform == "darwin" and getattr(sys, "frozen", False):
+        carpeta = os.path.expanduser("~/Library/Logs/NuevosNegociosAI")
+        os.makedirs(carpeta, exist_ok=True)
+        log = os.path.join(carpeta, "app.log")
+    else:
+        log = os.path.join(_base_dir(), "app.log")
     try:
         f = open(log, "a", encoding="utf-8", buffering=1)
         sys.stdout = f

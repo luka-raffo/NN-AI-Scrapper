@@ -1,11 +1,14 @@
 # -*- mode: python ; coding: utf-8 -*-
-# Build del ejecutable "Nuevos Negocios AI" (onefile, sin consola, con icono).
-#   py -m PyInstaller --clean --noconfirm NuevosNegociosAI.spec
+# Build de la app de escritorio para macOS (.app). SE CORRE EN UNA MAC:
+# PyInstaller no compila para otro sistema operativo.
+#   python3 -m PyInstaller --clean --noconfirm NuevosNegociosAI-mac.spec
+# Sale dist/Nuevos Negocios AI.app. La arquitectura es la del Python con el
+# que se compila (Apple Silicon -> arm64, Intel -> x86_64).
+# Mismo contenido que NuevosNegociosAI.spec (Windows); ver ahi el porque de
+# cada paquete. Diferencia: en Mac va en carpeta (onedir) dentro de un BUNDLE,
+# que es lo que macOS espera de un .app (onefile + .app esta desaconsejado).
 from PyInstaller.utils.hooks import collect_all
 
-# Guardarrail: si el punto de entrada quedo vacio (paso: una edicion lo trunco a
-# 0 bytes), PyInstaller compila igual y sale un .exe de 60 MB con todas las
-# librerias pero SIN la app: arranca, no hace nada y se cierra. Falla ruidoso.
 import os as _os
 if _os.path.getsize("launcher.py") < 1000:
     raise SystemExit("ABORTADO: launcher.py tiene "
@@ -13,14 +16,6 @@ if _os.path.getsize("launcher.py") < 1000:
 
 datas, binaries, hiddenimports = [], [], []
 
-# Paquetes fragiles: incluir TODO (submodulos, datos y binarios).
-#  - undetected_chromedriver / selenium: motor del navegador anti-bloqueo.
-#  - curl_cffi: trae libcurl-impersonate (DLLs); lo usa Amazon/meli_fetch.
-#  - uvicorn / fastapi / starlette: backend web.
-#  - lxml: bs4 lo usa por NOMBRE -> BeautifulSoup(html, "lxml"). No hay un
-#    import literal que PyInstaller pueda seguir, asi que la deteccion
-#    automatica es inestable (un build lo incluyo y el siguiente no, dejando un
-#    .exe que no parsea NINGUN producto). Se colecta explicito.
 for pkg in ("undetected_chromedriver", "selenium", "curl_cffi",
             "uvicorn", "fastapi", "starlette", "lxml"):
     d, b, h = collect_all(pkg)
@@ -28,7 +23,6 @@ for pkg in ("undetected_chromedriver", "selenium", "curl_cffi",
     binaries += b
     hiddenimports += h
 
-# uvicorn resuelve estos por nombre en runtime -> asegurarlos explicitos.
 hiddenimports += [
     "uvicorn.loops.auto", "uvicorn.loops.asyncio",
     "uvicorn.protocols.http.auto", "uvicorn.protocols.http.h11_impl",
@@ -37,7 +31,6 @@ hiddenimports += [
     "uvicorn.logging",
 ]
 
-# Datos de la app: van a la raiz del bundle (= mc.BASE_DIR cuando frozen).
 datas += [
     ("NN AI - Verticales MELI.csv", "."),
     ("categorias_ar.json", "."),
@@ -56,7 +49,6 @@ a = Analysis(
     hiddenimports=hiddenimports,
     hookspath=[],
     runtime_hooks=[],
-    # No se usan en el flujo del backend; excluirlos adelgaza mucho el .exe.
     excludes=["pandas", "openpyxl", "matplotlib", "tkinter", "PyQt5", "PySide6"],
     noarchive=False,
 )
@@ -65,15 +57,38 @@ pyz = PYZ(a.pure)
 exe = EXE(
     pyz,
     a.scripts,
-    a.binaries,
-    a.datas,
     [],
+    exclude_binaries=True,
     name="NuevosNegociosAI",
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
     upx=False,
-    runtime_tmpdir=None,
-    console=False,                                   # sin ventana de consola
-    icon="nuevos_negocios_ai_icono_windows.ico",
+    console=False,
+    argv_emulation=False,
+    icon="nuevos_negocios_ai_icono_mac.icns",
+)
+
+coll = COLLECT(
+    exe,
+    a.binaries,
+    a.datas,
+    strip=False,
+    upx=False,
+    name="NuevosNegociosAI",
+)
+
+app = BUNDLE(
+    coll,
+    name="Nuevos Negocios AI.app",
+    icon="nuevos_negocios_ai_icono_mac.icns",
+    bundle_identifier="ar.com.bidcom.nuevosnegociosai",
+    info_plist={
+        "CFBundleDisplayName": "Nuevos Negocios AI",
+        "CFBundleShortVersionString": "1.0",
+        "NSHighResolutionCapable": True,
+        # Sin icono propio en el Dock: la app es un backend que abre el
+        # navegador; la ventana visible es la del navegador del usuario.
+        "LSUIElement": True,
+    },
 )

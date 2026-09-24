@@ -1,0 +1,3 @@
+# Scripts de macOS: siempre LF (con CRLF bash falla con "bad interpreter").
+*.command text eol=lf
+*.sh text eol=lf

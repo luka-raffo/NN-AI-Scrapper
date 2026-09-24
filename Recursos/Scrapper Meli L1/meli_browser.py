@@ -32,6 +32,7 @@ paralelo): la serie de paises regionales se hace en secuencia, ~6-8s c/u.
 """
 
 import os
+import sys
 import threading
 import time
 from urllib.parse import urlsplit
@@ -41,10 +42,22 @@ import undetected_chromedriver as uc
 import meli_common as mc
 
 PRODUCT_MARKERS = ("poly-card", "ui-search-layout__item")
+# Desafio anti-bot "micro-landing" (sep 2026): NO es un muro. La pagina corre un
+# proof-of-work en JS (verifyChallenge) y redirige SOLA al listado real, en ~2-3 s
+# (o a los 10 s por timeout, igual continua). Tratarlo como muro y recargar
+# reinicia el desafio y nunca lo deja terminar: hay que ESPERARLO.
+CHALLENGE_MARKERS = ("verifyChallenge", "micro-landing-container")
+# Muro de verdad (no se resuelve solo): lo que queda de mc.BLOCK_MARKERS.
+HARD_BLOCK_MARKERS = tuple(m for m in mc.BLOCK_MARKERS if m not in CHALLENGE_MARKERS)
+CHALLENGE_WAIT_S = 20  # techo de espera cuando aparece el desafio (su timeout es 10 s)
 WAIT_S = 10        # techo de espera a que hidraten las publicaciones
 POLL_S = 0.3
 WARMUP_S = 2.5     # espera tras entrar a la home para asentar la sesion
 MAX_INTENTOS = 3   # reintentos si el listado cae en el muro
+# Backoff creciente entre reintentos. El 1ro corto (el muro ya se detecto, no
+# hay que esperar de mas); los siguientes mas largos porque, si el muro insiste,
+# es que la sesion quedo marcada y conviene despegarse de la rafaga.
+BACKOFF_S = (1.5, 4.0, 8.0)
 
 # Homes por prefijo, para pre-calentar sin depender de un cat_id concreto.
 HOMES = {
@@ -70,7 +83,19 @@ def _chrome_major():
 
     uc por defecto baja el driver de la ultima version publicada y falla si el
     Chrome local es anterior; fijar la mayor correcta evita ese desajuste.
+    Windows: registro (BLBeacon). macOS: Info.plist del .app de Chrome.
     """
+    if sys.platform == "darwin":
+        import plistlib
+        for app in ("/Applications/Google Chrome.app",
+                    os.path.expanduser("~/Applications/Google Chrome.app")):
+            try:
+                with open(os.path.join(app, "Contents", "Info.plist"), "rb") as f:
+                    ver = plistlib.load(f)["CFBundleShortVersionString"]
+                return int(ver.split(".")[0])
+            except Exception:
+                continue
+        return None
     try:
         import winreg
         for hive in (winreg.HKEY_CURRENT_USER, winreg.HKEY_LOCAL_MACHINE):
@@ -89,7 +114,15 @@ def _chrome_major():
 def _crear_driver():
     opts = uc.ChromeOptions()
     opts.add_argument("--window-size=1400,1000")
-    opts.add_argument("--window-position=-32000,-32000")  # fuera de pantalla
+    if sys.platform == "darwin":
+        # macOS no deja ventanas fuera de pantalla (las trae de vuelta a la
+        # vista): se minimizan tras crearlas (_ocultar_en_mac). Minimizada,
+        # Chrome la trata como en segundo plano y frenaria timers y renderer,
+        # que el desafio anti-bot necesita: estos flags lo evitan.
+        opts.add_argument("--disable-background-timer-throttling")
+        opts.add_argument("--disable-renderer-backgrounding")
+    else:
+        opts.add_argument("--window-position=-32000,-32000")  # fuera de pantalla
     opts.add_argument("--no-first-run")
     opts.add_argument("--no-default-browser-check")
     opts.add_argument("--disable-blink-features=AutomationControlled")
@@ -105,7 +138,18 @@ def _crear_driver():
     driver = uc.Chrome(options=opts, headless=False, use_subprocess=True,
                        version_main=_chrome_major())
     _ocultar_de_taskbar(driver)
+    _ocultar_en_mac(driver)
     return driver
+
+
+def _ocultar_en_mac(driver):
+    """macOS: minimiza la ventana del Chrome del pool (queda en el Dock)."""
+    if sys.platform != "darwin":
+        return
+    try:
+        driver.minimize_window()
+    except Exception:
+        pass
 
 
 def _ocultar_de_taskbar(driver):
@@ -240,20 +284,53 @@ def _warmup(driver, url):
     try:
         driver.get(home)
         time.sleep(WARMUP_S)
+        _esperar_desafio(driver)  # la home tambien puede traer el desafio
         _warmed.add(home)
     except Exception:
         pass
 
 
-def _esperar_carga(driver):
-    """Camino lento: lee page_source cuando aparecen publicaciones o el muro."""
+def _es_desafio(html):
+    return (any(m in html for m in CHALLENGE_MARKERS)
+            and not any(m in html for m in PRODUCT_MARKERS))
+
+
+def _page_source(driver):
+    # Mientras el desafio redirige, leer el DOM puede fallar un instante.
+    try:
+        return driver.page_source
+    except Exception:
+        return ""
+
+
+def _esperar_desafio(driver):
+    """Si la pagina actual es el desafio, espera a que redirija sola."""
     t0 = time.time()
-    html = driver.page_source
-    while time.time() - t0 < WAIT_S:
-        if mc.esta_bloqueado(html) or any(m in html for m in PRODUCT_MARKERS):
-            break
+    html = _page_source(driver)
+    while _es_desafio(html) and time.time() - t0 < CHALLENGE_WAIT_S:
         time.sleep(POLL_S)
-        html = driver.page_source
+        html = _page_source(driver)
+    return html
+
+
+def _esperar_carga(driver):
+    """Lee page_source cuando aparecen publicaciones o un muro de verdad.
+
+    El desafio no corta la espera: extiende el techo a CHALLENGE_WAIT_S para
+    darle tiempo a resolverse y redirigir al listado.
+    """
+    t0 = time.time()
+    techo = WAIT_S
+    html = _page_source(driver)
+    while time.time() - t0 < techo:
+        if any(m in html for m in PRODUCT_MARKERS):
+            break
+        if any(m in html for m in HARD_BLOCK_MARKERS):
+            break
+        if _es_desafio(html):
+            techo = CHALLENGE_WAIT_S
+        time.sleep(POLL_S)
+        html = _page_source(driver)
     return html
 
 
@@ -276,9 +353,24 @@ def obtener_html(url, log=print):
                 html = _esperar_carga(driver)
                 if not mc.esta_bloqueado(html):
                     return 200, html
+                if intento == MAX_INTENTOS:
+                    # Ultimo intento: dormir aca solo demora el 503. Si se tira el
+                    # driver, para que la PROXIMA consulta arranque con sesion limpia.
+                    log(f"      [{netloc}][{intento}/{MAX_INTENTOS}] muro; me rindo.")
+                    _reset_driver(netloc)
+                    break
                 log(f"      [{netloc}][{intento}/{MAX_INTENTOS}] muro; reintento...")
                 _warmed.discard(_home_de(url))  # recalentar por las dudas
-                time.sleep(1.5)   # backoff corto: el muro ya se detecto, no espero de mas
+                # Desde el 2do fallo el problema ya no es una sesion "fria":
+                # MELI marco ESTA sesion, y recalentar el mismo Chrome no la
+                # limpia (se veia un pais agotando los 3 intentos mientras los
+                # otros pasaban al 1er reintento). Se tira el driver y se
+                # levanta uno nuevo: sesion y cookies limpias, que es lo que
+                # documentadamente pasa el muro.
+                if intento >= 2:
+                    log(f"      [{netloc}] sesion marcada; Chrome nuevo...")
+                    _reset_driver(netloc)
+                time.sleep(BACKOFF_S[min(intento - 1, len(BACKOFF_S) - 1)])
             except Exception as e:
                 log(f"      [{netloc}] navegador cayo ({e}); reinicio y reintento...")
                 _reset_driver(netloc)
