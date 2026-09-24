@@ -353,6 +353,11 @@ def obtener_html(url, log=print):
                 html = _esperar_carga(driver)
                 if not mc.esta_bloqueado(html):
                     return 200, html
+                # Distinguir en el log: un desafio que no se resolvio en
+                # CHALLENGE_WAIT_S (JS frenado, p.ej. ventana en segundo plano)
+                # no se arregla igual que un muro duro (IP/sesion marcada).
+                tipo = "desafio sin resolver" if _es_desafio(html) else "muro duro"
+                log(f"      [{netloc}] {tipo} ({len(html)} bytes)")
                 if intento == MAX_INTENTOS:
                     # Ultimo intento: dormir aca solo demora el 503. Si se tira el
                     # driver, para que la PROXIMA consulta arranque con sesion limpia.
