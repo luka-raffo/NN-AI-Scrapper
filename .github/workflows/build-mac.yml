@@ -10,6 +10,10 @@ on:
       - "Recursos/htmlMvpNuevosNegociosAI.html"
       - ".github/workflows/build-mac.yml"
 
+# Para publicar el release "mac-latest" (link de descarga permanente).
+permissions:
+  contents: write
+
 jobs:
   build:
     strategy:
@@ -63,3 +67,19 @@ jobs:
           name: NuevosNegociosAI-mac-${{ runner.arch }}
           path: "Recursos/Scrapper Meli L1/dist/NuevosNegociosAI-mac-*.zip"
           if-no-files-found: error
+
+      # Link permanente y publico (sin login) que usa mac/instalar.sh. Se pisa
+      # en cada build de las ramas que se usan; otras ramas solo dejan artifact.
+      - name: Publicar release mac-latest
+        if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/motor-navegador-pool-exe'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view mac-latest >/dev/null 2>&1 || gh release create mac-latest \
+            --target "$GITHUB_SHA" --title "Nuevos Negocios AI - Mac" \
+            --notes "Instalar o actualizar en una Mac con chip Apple (M1-M4), pegando en Terminal:
+
+          curl -fsSL https://github.com/luka-raffo/NN-AI-Scrapper/releases/download/mac-latest/instalar.sh | bash
+
+          Requiere Google Chrome instalado. No bajar el .zip con el navegador: macOS lo deja en cuarentena y la app no arranca."
+          gh release upload mac-latest dist/NuevosNegociosAI-mac-arm64.zip mac/instalar.sh --clobber
