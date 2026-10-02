@@ -143,8 +143,12 @@ def _crear_driver():
 
 
 def _ocultar_en_mac(driver):
-    """macOS: minimiza la ventana del Chrome del pool (queda en el Dock)."""
-    if sys.platform != "darwin":
+    """macOS: minimiza la ventana del Chrome del pool (queda en el Dock).
+
+    NNAI_VENTANA_VISIBLE=1 la deja a la vista: sirve para diagnosticar si la
+    minimizacion es lo que hace caer en el muro.
+    """
+    if sys.platform != "darwin" or os.environ.get("NNAI_VENTANA_VISIBLE"):
         return
     try:
         driver.minimize_window()
