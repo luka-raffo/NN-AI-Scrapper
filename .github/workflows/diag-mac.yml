@@ -19,7 +19,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: python -m pip install -q -r requirements.txt
+      - run: python -m pip install -q -r requirements.txt setuptools
       - name: Señales del Chrome del motor
         run: |
           python - <<'EOF'
