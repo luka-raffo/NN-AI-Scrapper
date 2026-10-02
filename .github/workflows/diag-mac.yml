@@ -1,0 +1,52 @@
+# Diagnostico del motor de navegador en macOS: que señales de automatizacion
+# expone el Chrome de undetected-chromedriver (lo que mira el anti-bot de MELI).
+name: Diag Mac
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/diag-mac.yml"
+
+jobs:
+  diag:
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: "Recursos/Scrapper Meli L1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -q -r requirements.txt
+      - name: Señales del Chrome del motor
+        run: |
+          python - <<'EOF'
+          import time, meli_browser as mb, meli_common as mc
+          print("chrome major:", mb._chrome_major())
+          d = mb._get_driver("www.mercadolibre.com.ar")
+          js = lambda s: d.execute_script("return " + s)
+          d.get("https://www.mercadolibre.com.ar/")
+          time.sleep(3)
+          for s in ("navigator.webdriver", "navigator.userAgent", "navigator.platform",
+                    "navigator.languages", "navigator.plugins.length",
+                    "!!window.chrome", "document.visibilityState",
+                    "Object.keys(window).filter(k => k.startsWith('cdc_') || k.startsWith('$cdc')).length"):
+              print(f"{s} = {js(s)!r}")
+          import glob, os, subprocess
+          for p in glob.glob(os.path.expanduser("~/Library/Application Support/undetected_chromedriver/*")):
+              out = subprocess.run(["grep", "-c", "cdc_", p], capture_output=True, text=True).stdout.strip()
+              print("driver:", p, "| 'cdc_' en binario:", out)
+          d.get("https://www.mercadolibre.com.ar/mas-vendidos/MLA1051")
+          t = time.time()
+          while time.time() - t < 25:
+              h = mb._page_source(d)
+              if any(k in h for k in mb.PRODUCT_MARKERS): print("RESULT: productos", round(time.time()-t,1)); break
+              if mb._es_desafio(h): estado = "desafio"
+              elif mc.esta_bloqueado(h): print("RESULT: muro duro", len(h), [m for m in mc.BLOCK_MARKERS if m in h]); break
+              time.sleep(0.5)
+          else:
+              print("RESULT: desafio sin resolver en 25 s")
+          mb.cerrar()
+          EOF
