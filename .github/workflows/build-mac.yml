@@ -83,3 +83,22 @@ jobs:
 
           Requiere Google Chrome instalado. No bajar el .zip con el navegador: macOS lo deja en cuarentena y la app no arranca."
           gh release upload mac-latest dist/NuevosNegociosAI-mac-arm64.zip mac/instalar.sh --clobber
+
+  # Prueba el camino del usuario final, tal cual: pegar el comando en Terminal
+  # (baja del release publico), y que la app abra desde Aplicaciones con `open`
+  # (LaunchServices + Gatekeeper, como el doble clic), sin tocar Seguridad.
+  probar-instalador:
+    needs: build
+    if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/motor-navegador-pool-exe'
+    runs-on: macos-latest
+    steps:
+      - name: Instalar como el usuario final
+        run: curl -fsSL https://github.com/luka-raffo/NN-AI-Scrapper/releases/download/mac-latest/instalar.sh | bash
+      - name: La app abrio y sirve la web
+        run: |
+          for i in $(seq 1 60); do curl -sf http://127.0.0.1:8000/health && break; sleep 1; done
+          echo
+          curl -sf -o /dev/null -w "web: %{http_code} %{size_download}B\n" http://127.0.0.1:8000/
+          ls -la ~/Desktop/"Detener Nuevos Negocios AI.command"
+          bash ~/Desktop/"Detener Nuevos Negocios AI.command"
+          cat ~/Library/Logs/NuevosNegociosAI/app.log | head -20
